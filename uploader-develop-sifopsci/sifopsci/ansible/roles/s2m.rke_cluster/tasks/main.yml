@@ -1,0 +1,8 @@
+---
+#tasks file for omnishorerke.rke_cluster
+- name: Create the rancher-cluster file 
+  local_action:
+    module: template
+    src: rancher-cluster.yml.j2
+    dest: "{{ platform_files_directory }}/rke_cluster.yml"
+    unsafe_writes: yes

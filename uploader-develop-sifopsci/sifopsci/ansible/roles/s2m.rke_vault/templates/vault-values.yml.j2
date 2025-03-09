@@ -1,0 +1,26 @@
+
+injector:
+  enabled: true
+  image:
+    repository: {{ vault_registry }}/vault-k8s
+    tag: "0.14.2"
+  agentImage:
+    repository: {{ vault_registry }}/vault
+    tag: "1.9.2"
+
+
+server:
+  enabled: true
+  image:
+    repository: {{ vault_registry }}/vault
+    tag: "1.9.2"
+    pullPolicy: IfNotPresent
+  ingress:
+    enabled: true
+    hosts:
+      - host: {{ vault_host }}
+  dataStorage:
+    enabled: true
+    size: 10Gi
+    mountPath: "/vault/data"
+    storageClass: {{ vault_sc }}

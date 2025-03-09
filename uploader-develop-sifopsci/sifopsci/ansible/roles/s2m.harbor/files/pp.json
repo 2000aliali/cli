@@ -1,0 +1,10 @@
+{
+  "project_name": "push-payment",
+  "public": true,
+  "metadata": { 
+    "public": "true", 
+    "prevent_vul": "false",
+    "auto_scan": "false"
+   },
+   "storage_limit": -1 
+}

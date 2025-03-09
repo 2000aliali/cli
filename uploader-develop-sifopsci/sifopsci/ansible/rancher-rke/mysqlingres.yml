@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+  name: phpmyadmin
+spec:
+  rules:
+  - host: phpmyadmin.hadithm6.ma
+    http:
+      paths:
+      - backend:
+          service:
+            name: minassat-m6-drupal-mysql
+            port:
+              number: 3306
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - phpmyadmin.hadithm6.ma
+    secretName: certificates-secret

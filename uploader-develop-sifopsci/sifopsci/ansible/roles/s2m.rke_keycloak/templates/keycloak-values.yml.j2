@@ -1,0 +1,103 @@
+db:
+  database: keycloak
+  params: useSSL=false
+  password: cGFzc3dvcmQ=
+  port: "3306"
+  user: root
+  vendor: mysql
+global:
+  imagePullSecrets:
+  - name: regsecret
+  registry: ""
+  registry1: ""
+  registry3: {{ keycloak_registry }}
+image:
+  pullPolicy: IfNotPresent
+  repository: keycloak
+  tag: 15.0.2-12.0.3
+ingress:
+  annotations: {}
+  className: ""
+  enabled: true
+  hosts:
+  - host: {{ keycloak_host  }}
+    paths:
+    - path: /
+      pathType: ImplementationSpecific
+  tls: []
+initContainers:
+  resources:
+    limits:
+      cpu: 800m
+      memory: 512Mi
+    requests:
+      cpu: 20m
+      memory: 512Mi
+kafka:
+  bootstrapServers: kafka-cluster-kafka-bootstrap.kafka:9092
+  producerAcks: "1"
+  schemaRegistryEp: schema-registry-client.kafka:8081
+keycloak:
+  logLevel: DEBUG
+  password: {{ admin_password }}
+  proxyAddressForwarding: "true"
+  user: admin
+livenessProbe:
+  enabled: false
+  failureThreshold: 3
+  httpGet:
+    path: /auth/realms/master
+    port: 8080
+  initialDelaySeconds: 140
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+mysql:
+  image:
+    pullPolicy: IfNotPresent
+    repository: mysql
+    tag: 0.0.2
+  livenessProbe:
+    enabled: false
+    httpGet:
+      path: /auth/realms/master
+      port: 8080
+  readinessProbe:
+    enabled: false
+    httpGet:
+      path: /auth/realms/master
+      port: 8080
+  resources:
+    limits:
+      cpu: 800m
+      memory: 1Gi
+    requests:
+      cpu: 20m
+      memory: 512Mi
+  storageClassName: {{ storageClassName }}
+  storageSize: {{ storageSize }}
+readinessProbe:
+  enabled: true
+  failureThreshold: 3
+  httpGet:
+    path: /auth/realms/master
+    port: 8080
+  initialDelaySeconds: 120
+  periodSeconds: 30
+  successThreshold: 1
+  timeoutSeconds: 1
+replicaCount: 1
+resources:
+  limits:
+    cpu: 800m
+    memory: 1Gi
+  requests:
+    cpu: 20m
+    memory: 512Mi
+service:
+  port: 8080
+  type: ClusterIP
+topic:
+  adminEvent: nxp-audit-trail-integration-admin-event-topic-n-004
+  brutForce: nxp-audit-trail-integration-brute-force-topic-n-004
+  userEvent: nxp-audit-trail-integration-user-event-topic-n-004

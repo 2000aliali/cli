@@ -1,0 +1,57 @@
+---
+# tasks file for resizing
+- name: Creating pv
+  lvg:
+    vg: "{{ item.key }}"
+    pvs: "{{ item.value.pvs|join(',') }}"
+    state: present
+  with_dict: "{{ lvm_config['vgs']}}"
+
+# lv extend
+- name: Conduct resize of lv
+  lvol:
+    lv: "{{ item.name }}"
+    vg: "{{ item.vg }}"
+    size: "{{ item.size }}"
+    state: present
+  with_items: "{{ lvm_config['lvs'] }}"
+
+# extenf filesystem
+- name: Extending filesystems
+  filesystem:
+    dev: "{{ item.value.dev }}"
+    fstype: "{{ item.value.type }}"
+    opts: "{{ item.value.opts }}"
+    resizefs: yes
+  with_dict: "{{ filesystems_config }}"
+
+  # tasks file for longhorn
+- name: Creating pv for longhorn
+  lvg:
+    vg: "vg_long"
+    pvs: "/dev/sdc"
+    state: present
+# Creating lv for longhorn
+- name: Creating lv for longhorn
+  lvol:
+    lv: "varlong"
+    vg: "vg_long"
+    size: "+100%FREE"
+    state: present
+# Creating filesystem for longhorn
+- name: Creating filesystems
+  filesystem:
+    dev: "/dev/vg_long/varlong"
+    fstype: "xfs"
+
+# Mount filesystem of longhorn
+
+- name: Mount filesystems
+  mount:
+    src: "/dev/vg_long/varlong"
+    name: "/var/lib/longhorn"
+    opts: "noatime,nodiratime"
+    fstype: "xfs"
+    state: "mounted"
+    passno: "2"
+    dump: "0"

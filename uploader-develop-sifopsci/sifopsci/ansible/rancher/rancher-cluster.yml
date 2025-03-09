@@ -1,0 +1,40 @@
+#Ansible managed
+cluster_name: "rke"
+
+nodes:
+    
+  - address: "172.31.75.217"
+    user: "ec2-user" 
+    role: [controlplane,etcd] 
+  - address: "172.31.67.169"
+    user: "ec2-user" 
+    role: [controlplane,etcd] 
+  - address: "172.31.65.40"
+    user: "ec2-user" 
+    role: [controlplane,etcd] 
+  
+  - address: "172.31.72.24"
+    user: "ec2-user" 
+    role: [worker] 
+  - address: "172.31.67.26"
+    user: "ec2-user" 
+    role: [worker] 
+  - address: "172.31.76.175"
+    user: "ec2-user" 
+    role: [worker] 
+  - address: "172.31.70.163"
+    user: "ec2-user" 
+    role: [worker] 
+  
+ssh_key_path: /root/.ssh/id_rsa
+system_images:
+  kubernetes: harbor.doc.offline.s2m.ma/rancher/hyperkube:v1.21.5-rancher1
+
+private_registries:
+  - url: harbor.doc.offline.s2m.ma
+    user: admin
+    password: 123d@o456
+    is_default: true
+
+network:
+  plugin: calico

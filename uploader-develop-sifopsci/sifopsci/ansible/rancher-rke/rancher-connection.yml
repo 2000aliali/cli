@@ -1,0 +1,170 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cattle-system
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cattle
+  namespace: cattle-system
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cattle-admin-binding
+  namespace: cattle-system
+  labels:
+    cattle.io/creator: "norman"
+subjects:
+- kind: ServiceAccount
+  name: cattle
+  namespace: cattle-system
+roleRef:
+  kind: ClusterRole
+  name: cattle-admin
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cattle-credentials-52112bb
+  namespace: cattle-system
+type: Opaque
+data:
+  url: "aHR0cHM6Ly9yYW5jaGVyLmhhZGl0aC5tYQ=="
+  token: "Zjdya2Y1OHJkN2M4ZndyNXoyOXE1bHNyd2tkcnR3bXg3ZG54c3M1ZmZnNXRiNDc0cXNudHpi"
+  namespace: ""
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cattle-admin
+  labels:
+    cattle.io/creator: "norman"
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- nonResourceURLs:
+  - '*'
+  verbs:
+  - '*'
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cattle-cluster-agent
+  namespace: cattle-system
+spec:
+  selector:
+    matchLabels:
+      app: cattle-cluster-agent
+  template:
+    metadata:
+      labels:
+        app: cattle-cluster-agent
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: beta.kubernetes.io/os
+                  operator: NotIn
+                  values:
+                    - windows
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: node-role.kubernetes.io/controlplane
+                operator: In
+                values:
+                - "true"
+            weight: 100
+          - preference:
+              matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: In
+                values:
+                - "true"
+            weight: 100
+          - preference:
+              matchExpressions:
+              - key: node-role.kubernetes.io/master
+                operator: In
+                values:
+                - "true"
+            weight: 100
+          - preference:
+              matchExpressions:
+              - key: cattle.io/cluster-agent
+                operator: In
+                values:
+                - "true"
+            weight: 1
+      serviceAccountName: cattle
+      tolerations:
+      # No taints or no controlplane nodes found, added defaults
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/controlplane
+        value: "true"
+      - effect: NoSchedule
+        key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+      - effect: NoSchedule
+        key: "node-role.kubernetes.io/master"
+        operator: "Exists"
+      containers:
+        - name: cluster-register
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: CATTLE_FEATURES
+            value: ""
+          - name: CATTLE_IS_RKE
+            value: "false"
+          - name: CATTLE_SERVER
+            value: "https://rancher.hadith.ma"
+          - name: CATTLE_CA_CHECKSUM
+            value: "ad92985112494627016445724a2faf31f9b025f47619eaac4fc32c80aac5dd32"
+          - name: CATTLE_CLUSTER
+            value: "true"
+          - name: CATTLE_K8S_MANAGED
+            value: "true"
+          - name: CATTLE_CLUSTER_REGISTRY
+            value: ""
+          image: rancher/rancher-agent:v2.5.11
+          volumeMounts:
+          - name: cattle-credentials
+            mountPath: /cattle-credentials
+            readOnly: true
+          readinessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            httpGet:
+              path: /health
+              port: 8080
+      volumes:
+      - name: cattle-credentials
+        secret:
+          secretName: cattle-credentials-52112bb
+          defaultMode: 320
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+

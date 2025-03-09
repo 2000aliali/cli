@@ -1,0 +1,15 @@
+---
+- name: Rendering the edp Operator
+  local_action:
+    module: template
+    src: postgresql-operator-1.18.0.yaml.j2
+    dest: /app/ansible/edp/postgresql-operator-1.18.0.yaml
+    unsafe_writes: yes
+
+- name: Rendering the edp cluster
+  local_action:
+    module: template
+    src: cluster-edp.yaml.j2
+    dest: /app/ansible/edp/cluster-edp.yaml
+    unsafe_writes: yes
+

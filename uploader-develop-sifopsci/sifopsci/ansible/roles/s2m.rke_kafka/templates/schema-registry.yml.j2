@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ kafka_namespace }}
+  name: schema-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: cp-registry
+  template:
+    metadata:
+      labels:
+        name: cp-registry
+    spec:
+      containers:
+      - name: cp-registry-container
+        image: {{ registry_schema }}/cp-schema-registry:6.1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8081 
+        env:
+        #- name: SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL
+        #  value: kafka-cluster-zookeeper-client:2181
+        - name: SCHEMA_REGISTRY_HOST_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
+          value: PLAINTEXT://kafka-cluster-kafka-bootstrap:9092
+        - name: SCHEMA_REGISTRY_LISTENERS
+          value: http://0.0.0.0:8081 
+        - name: SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL
+          value: PLAINTEXT
+        - name: SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS
+          value: 'GET,POST,PUT,OPTIONS'
+        - name: SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN
+          value: '*'
+       # - name: SCHEMA_REGISTRY_SCHEMA_COMPATIBILITY_LEVEL
+       #   value: 'none'
+       # - name: SCHEMA_REGISTRY_SCHEMA_KAFKASTORE_TOPIC
+       #   value: '_schemas01'

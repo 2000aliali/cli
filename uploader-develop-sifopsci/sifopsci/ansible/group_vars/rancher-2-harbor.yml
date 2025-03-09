@@ -1,0 +1,17 @@
+#ansible_python_interpreter: "/usr/bin/python3"
+ansible_os_family: RedHat
+#ansible_ssh_private_key_file: /app/OFFLINE_SSH_KEY.pem
+#ansible_user: ec2-user
+cluster_name: rke
+kubernetes_supported_versions:
+  '1.19': v1.19.16-rancher1-1
+  '1.20': v1.20.11-rancher1-1
+  '1.21': v1.21.6-rancher1-1
+  '1.22': v1.22.5-rancher1-1
+kubernetes_version: '1.22'
+rancher_version: v2.6.3
+rke_binary_url: https://github.com/rancher/rke/releases/download/{{ rke_release }}/rke_linux-amd64
+rke_kubernetes_version: '{{ kubernetes_supported_versions[kubernetes_version] }}'
+rke_release: v1.3.1
+#users:
+#- username: ec2-user

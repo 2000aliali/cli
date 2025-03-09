@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-mysql
+spec:
+  replicas: 1
+  serviceName: {{ .Release.Name }}-mysql
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-mysql
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-mysql
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: mysql
+           {{- if .Values.global.registry3 }}
+          image: "{{ .Values.global.registry3 }}/{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag | default .Chart.AppVersion }}"
+          {{- else }}
+          image: "{{ .Values.global.registry }}/{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
+          ports:
+            - name: tpc
+              protocol: TCP
+              containerPort: 3306
+          env:
+            - name: MYSQL_DATABASE
+              value: "{{ .Values.db.database }}"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom: 
+               secretKeyRef: 
+                key: databasePassword
+                name: {{ include "keycloak.fullname" . }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+          {{- if .Values.mysql.readinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.mysql.readinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.mysql.livenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.mysql.livenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.mysql.resources | nindent 12 }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        storageClassName: "{{ .Values.mysql.storageClassName }}"
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: "{{ .Values.mysql.storageSize }}"

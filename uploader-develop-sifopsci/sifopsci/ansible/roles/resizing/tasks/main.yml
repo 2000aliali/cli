@@ -1,0 +1,26 @@
+---
+# tasks file for resizing
+- name: Creating pv
+  lvg:
+    vg: "{{ item.key }}"
+    pvs: "{{ item.value.pvs|join(',') }}"
+    state: present
+  with_dict: "{{ lvm_config['vgs']}}"
+
+# lv extend
+- name: Conduct resize of lv
+  lvol:
+    lv: "{{ item.name }}"
+    vg: "{{ item.vg }}"
+    size: "{{ item.size }}"
+    state: present
+  with_items: "{{ lvm_config['lvs'] }}"
+
+# extenf filesystem
+- name: Extending filesystems
+  filesystem:
+    dev: "{{ item.value.dev }}"
+    fstype: "{{ item.value.type }}"
+    opts: "{{ item.value.opts }}"
+    resizefs: yes
+  with_dict: "{{ filesystems_config }}"

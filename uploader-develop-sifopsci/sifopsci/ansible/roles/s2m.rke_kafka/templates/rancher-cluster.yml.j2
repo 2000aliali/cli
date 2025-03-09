@@ -1,0 +1,43 @@
+#{{ ansible_managed }}
+cluster_name: "{{ cluster_name }}"
+
+nodes:
+  {% for host in groups['rancher-2-controlplane'] %}
+{% if hostvars[host]['ansible_host'] and hostvars[host]['ansible_host']|length %}
+- address: "{{ hostvars[host]['ansible_host'] }}"
+    user: "{{ hostvars[host].users[0].username }}" 
+{% if hostvars[host].all_in_one %}
+    role: [controlplane,etcd,worker]
+{% else %}
+    role: [controlplane,etcd] 
+{% endif %}
+{% endif %}
+  {% endfor %}
+
+  {% for host in groups['rancher-2-workers'] %}
+{% if hostvars[host]['ansible_host'] and hostvars[host]['ansible_host']|length %}
+- address: "{{ hostvars[host]['ansible_host'] }}"
+    user: "{{ hostvars[host].users[0].username }}" 
+    role: [worker] 
+{% endif %}
+  {% endfor %}
+
+ssh_key_path: /root/.ssh/id_rsa
+{% if offline %}
+system_images:
+  kubernetes: {{ harbor_endpoint }}/rancher/hyperkube:v1.21.5-rancher1
+{% else %}
+system_images:
+  kubernetes: rancher/hyperkube:v1.21.5-rancher1
+{% endif %}
+
+{% if offline %}
+private_registries:
+  - url: {{ harbor_endpoint }}
+    user: admin
+    password: {{ harbor_password }}
+    is_default: true
+{% endif %}
+
+network:
+  plugin: calico

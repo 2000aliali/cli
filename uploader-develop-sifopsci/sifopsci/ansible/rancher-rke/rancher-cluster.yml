@@ -1,0 +1,26 @@
+#Ansible managed
+cluster_name: "rke"
+
+nodes:
+  - address: "x.x.x.x"
+    user: "ec2-user" 
+    role: [controlplane,worker,etcd] 
+  - address: "y.y.y.y"
+    user: "ec2-user" 
+    role: [controlplane,worker,etcd] 
+  - address: "z.z.z.z"
+    user: "ec2-user" 
+    role: [controlplane,worker,etcd] 
+  
+ssh_key_path: /root/.ssh/id_rsa
+system_images:
+  kubernetes: viclstrancher1applpp01:5000/rancher/hyperkube:v1.21.5-rancher1
+
+private_registries:
+  - url: viclstrancher1applpp01:5000
+    user: admin
+    password: admin
+    is_default: true
+
+network:
+  plugin: calico

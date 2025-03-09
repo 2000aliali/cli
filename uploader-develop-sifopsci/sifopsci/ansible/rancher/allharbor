@@ -1,0 +1,834 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: harbor
+      meta.helm.sh/release-namespace: harbor
+    creationTimestamp: "2022-02-07T16:07:40Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/component: chartmuseum
+      app.kubernetes.io/instance: harbor
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: harbor
+      helm.sh/chart: harbor-11.1.6
+    name: harbor-chartmuseum
+    namespace: harbor
+    resourceVersion: "768115"
+    uid: 6fc0dcf5-17c6-4fe1-8ed7-b503e8f5b1bf
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app.kubernetes.io/component: chartmuseum
+        app.kubernetes.io/instance: harbor
+        app.kubernetes.io/name: harbor
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          checksum/configmap-envvars: 8fd9c12b97d0c98fa74609fb96f687299987c2ce66bd61016509e1280f473254
+          checksum/secret: e76a958bce8bbf54b29f8dec1a687c8424a09377ddf8d5cee144365eeada994b
+          checksum/secret-core: 3de2140a3210881dcab5aba0e64d0e105b22b9593cf9e4d0c530acba7ba937fe
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/component: chartmuseum
+          app.kubernetes.io/instance: harbor
+          app.kubernetes.io/name: harbor
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/component: chartmuseum
+                    app.kubernetes.io/instance: harbor
+                    app.kubernetes.io/name: harbor
+                namespaces:
+                - harbor
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        automountServiceAccountToken: false
+        containers:
+        - env:
+          - name: DEBUG
+            value: "0"
+          - name: BASIC_AUTH_PASS
+            valueFrom:
+              secretKeyRef:
+                key: secret
+                name: harbor-core
+          envFrom:
+          - configMapRef:
+              name: harbor-chartmuseum-envvars
+          - secretRef:
+              name: harbor-chartmuseum-secret
+          image: docker.io/bitnami/chartmuseum:0.13.1-debian-10-r257
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 10
+            httpGet:
+              path: /health
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 20
+          name: chartmuseum
+          ports:
+          - containerPort: 9999
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 10
+            httpGet:
+              path: /health
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 20
+          resources: {}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /bitnami/data
+            name: chartmuseum-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1001
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: chartmuseum-data
+          persistentVolumeClaim:
+            claimName: harbor-chartmuseum
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2022-02-07T16:15:54Z"
+      lastUpdateTime: "2022-02-07T16:15:54Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2022-02-07T16:07:40Z"
+      lastUpdateTime: "2022-02-07T16:15:54Z"
+      message: ReplicaSet "harbor-chartmuseum-ff5b4bdc9" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      field.cattle.io/publicEndpoints: '[{"addresses":["172.22.68.122","172.22.68.123","172.22.68.124","172.22.68.125"],"port":80,"protocol":"HTTP","serviceName":"harbor:harbor-core","ingressName":"harbor:harbor-ingress","hostname":"harbor.s2m.ma","path":"/api/","allNodes":false},{"addresses":["172.22.68.122","172.22.68.123","172.22.68.124","172.22.68.125"],"port":80,"protocol":"HTTP","serviceName":"harbor:harbor-core","ingressName":"harbor:harbor-ingress","hostname":"harbor.s2m.ma","path":"/service/","allNodes":false},{"addresses":["172.22.68.122","172.22.68.123","172.22.68.124","172.22.68.125"],"port":80,"protocol":"HTTP","serviceName":"harbor:harbor-core","ingressName":"harbor:harbor-ingress","hostname":"harbor.s2m.ma","path":"/v2","allNodes":false},{"addresses":["172.22.68.122","172.22.68.123","172.22.68.124","172.22.68.125"],"port":80,"protocol":"HTTP","serviceName":"harbor:harbor-core","ingressName":"harbor:harbor-ingress","hostname":"harbor.s2m.ma","path":"/chartrepo/","allNodes":false},{"addresses":["172.22.68.122","172.22.68.123","172.22.68.124","172.22.68.125"],"port":80,"protocol":"HTTP","serviceName":"harbor:harbor-core","ingressName":"harbor:harbor-ingress","hostname":"harbor.s2m.ma","path":"/c/","allNodes":false}]'
+      meta.helm.sh/release-name: harbor
+      meta.helm.sh/release-namespace: harbor
+    creationTimestamp: "2022-02-07T16:07:40Z"
+    generation: 3
+    labels:
+      app.kubernetes.io/component: core
+      app.kubernetes.io/instance: harbor
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: harbor
+      helm.sh/chart: harbor-11.1.6
+    name: harbor-core
+    namespace: harbor
+    resourceVersion: "773207"
+    uid: e24aa5be-4724-4d50-a54c-eb8f6f93603f
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app.kubernetes.io/component: core
+        app.kubernetes.io/instance: harbor
+        app.kubernetes.io/name: harbor
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          checksum/configmap: 616db3d9687b7bb168f5e43ae5834b55709bae29f8babe004de987ff93bf52a9
+          checksum/configmap-envvars: 2f0049709cc74e7770dc79bdf842866b000619c13127a2e50b550d25e7bb1dde
+          checksum/secret: 58c427125c03784b28809dad8ab797161e7aea0d4b2147e2491f4ed0e7017487
+          checksum/secret-envvars: ce305d8e4dc07a9bb96e180b9b26ce37560e3d68a2677d7686802ba3d1362835
+          checksum/secret-jobservice: b14af98f36af61260dea52dca67502875c34298ffdc0d76ec5b0b8985c8a41bc
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/component: core
+          app.kubernetes.io/instance: harbor
+          app.kubernetes.io/name: harbor
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/component: core
+                    app.kubernetes.io/instance: harbor
+                    app.kubernetes.io/name: harbor
+                namespaces:
+                - harbor
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        automountServiceAccountToken: false
+        containers:
+        - env:
+          - name: BITNAMI_DEBUG
+            value: "false"
+          - name: CORE_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: secret
+                name: harbor-core
+          - name: JOBSERVICE_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: secret
+                name: harbor-jobservice
+          envFrom:
+          - configMapRef:
+              name: harbor-core-envvars
+          - secretRef:
+              name: harbor-core-envvars
+          image: docker.io/bitnami/harbor-core:2.4.0-debian-10-r46
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /api/v2.0/ping
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: core
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /api/v2.0/ping
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources: {}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+          startupProbe:
+            failureThreshold: 30
+            httpGet:
+              path: /api/v2.0/ping
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/core/app.conf
+            name: config
+            subPath: app.conf
+          - mountPath: /etc/core/key
+            name: secret-key
+            subPath: key
+          - mountPath: /etc/core/private_key.pem
+            name: token-service-private-key
+            subPath: tls.key
+          - mountPath: /etc/core/ca
+            name: ca-download
+          - mountPath: /etc/core/token
+            name: psc
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1001
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            items:
+            - key: app.conf
+              path: app.conf
+            name: harbor-core
+          name: config
+        - name: secret-key
+          secret:
+            defaultMode: 420
+            items:
+            - key: secretKey
+              path: key
+            secretName: harbor-core
+        - name: token-service-private-key
+          secret:
+            defaultMode: 420
+            secretName: harbor-core
+        - name: ca-download
+          secret:
+            defaultMode: 420
+            secretName: harbor-ingress
+        - emptyDir: {}
+          name: psc
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2022-02-07T16:18:00Z"
+      lastUpdateTime: "2022-02-07T16:18:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2022-02-07T16:18:00Z"
+      lastUpdateTime: "2022-02-07T16:18:00Z"
+      message: ReplicaSet "harbor-core-cb45d6f46" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: harbor
+      meta.helm.sh/release-namespace: harbor
+    creationTimestamp: "2022-02-07T16:07:40Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/component: jobservice
+      app.kubernetes.io/instance: harbor
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: harbor
+      helm.sh/chart: harbor-11.1.6
+    name: harbor-jobservice
+    namespace: harbor
+    resourceVersion: "769150"
+    uid: 2f4aa82a-b43c-416c-8cd0-9932f1ed0bde
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app.kubernetes.io/component: jobservice
+        app.kubernetes.io/instance: harbor
+        app.kubernetes.io/name: harbor
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          checksum/configmap: 965dd22160b3c48965d8a33ff2360cac80aa3714560cbed7b77f9dcf4a180c43
+          checksum/configmap-env: 520821a75e64409d1294e7a342a2e01fdf58133fdc724150be3dc82246ce8af7
+          checksum/secret: 5c28df999e5d30beae69552f6ba16fd8713410668962aed9aacee1ed5790f278
+          checksum/secret-core: 4280b69f0c47392b24d12afb76ba92fbb49d26e8ecb1a0f8f7de27dcaa78b38c
+          checksum/secret-env: f6fc2ce9be12e080c4fb6752e992d825601c72b6b2535e216cd5980d883b9f62
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/component: jobservice
+          app.kubernetes.io/instance: harbor
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: harbor
+          helm.sh/chart: harbor-11.1.6
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/component: jobservice
+                    app.kubernetes.io/instance: harbor
+                    app.kubernetes.io/name: harbor
+                namespaces:
+                - harbor
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        automountServiceAccountToken: false
+        containers:
+        - env:
+          - name: BITNAMI_DEBUG
+            value: "false"
+          - name: CORE_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: secret
+                name: harbor-core
+          - name: JOBSERVICE_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: secret
+                name: harbor-jobservice
+          envFrom:
+          - configMapRef:
+              name: harbor-jobservice-envvars
+          - secretRef:
+              name: harbor-jobservice-envvars
+          image: docker.io/bitnami/harbor-jobservice:2.4.0-debian-10-r47
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /api/v1/stats
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: jobservice
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /api/v1/stats
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources: {}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/jobservice/config.yml
+            name: jobservice-config
+            subPath: config.yml
+          - mountPath: /var/log/jobs
+            name: job-logs
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1001
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: harbor-jobservice
+          name: jobservice-config
+        - name: job-logs
+          persistentVolumeClaim:
+            claimName: harbor-jobservice
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2022-02-07T16:19:09Z"
+      lastUpdateTime: "2022-02-07T16:19:09Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2022-02-07T16:19:09Z"
+      lastUpdateTime: "2022-02-07T16:19:09Z"
+      message: ReplicaSet "harbor-jobservice-7cb58f4f9b" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      field.cattle.io/publicEndpoints: '[{"addresses":["172.22.68.122","172.22.68.123","172.22.68.124","172.22.68.125"],"port":80,"protocol":"HTTP","serviceName":"harbor:harbor-portal","ingressName":"harbor:harbor-ingress","hostname":"harbor.s2m.ma","path":"/","allNodes":false}]'
+      meta.helm.sh/release-name: harbor
+      meta.helm.sh/release-namespace: harbor
+    creationTimestamp: "2022-02-07T16:07:40Z"
+    generation: 3
+    labels:
+      app.kubernetes.io/component: portal
+      app.kubernetes.io/instance: harbor
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: harbor
+      helm.sh/chart: harbor-11.1.6
+    name: harbor-portal
+    namespace: harbor
+    resourceVersion: "773208"
+    uid: f0508079-c315-47af-8560-6c1e33b9d0d1
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app.kubernetes.io/component: portal
+        app.kubernetes.io/instance: harbor
+        app.kubernetes.io/name: harbor
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/component: portal
+          app.kubernetes.io/instance: harbor
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: harbor
+          helm.sh/chart: harbor-11.1.6
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/component: portal
+                    app.kubernetes.io/instance: harbor
+                    app.kubernetes.io/name: harbor
+                namespaces:
+                - harbor
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        automountServiceAccountToken: false
+        containers:
+        - env:
+          - name: BITNAMI_DEBUG
+            value: "false"
+          image: docker.io/bitnami/harbor-portal:2.4.1-debian-10-r0
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: portal
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources: {}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /opt/bitnami/nginx/conf/nginx.conf
+            name: portal-config
+            subPath: nginx.conf
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1001
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: harbor-portal
+          name: portal-config
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2022-02-07T16:13:10Z"
+      lastUpdateTime: "2022-02-07T16:13:10Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2022-02-07T16:07:40Z"
+      lastUpdateTime: "2022-02-07T16:13:10Z"
+      message: ReplicaSet "harbor-portal-86bb64ff84" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: harbor
+      meta.helm.sh/release-namespace: harbor
+    creationTimestamp: "2022-02-07T16:07:40Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/component: registry
+      app.kubernetes.io/instance: harbor
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: harbor
+      helm.sh/chart: harbor-11.1.6
+    name: harbor-registry
+    namespace: harbor
+    resourceVersion: "769317"
+    uid: 20b9fb01-0b0c-49fd-9f87-83f5b61cc08a
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app.kubernetes.io/component: registry
+        app.kubernetes.io/instance: harbor
+        app.kubernetes.io/name: harbor
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          checksum/configmap: 3cd5aec201ad26215520173726f75511992943f3653447dda3e2056883a1309a
+          checksum/secret: d566167ef93c8b356cd4c7b6430c7736e97d71dfbc4d3523dbe2c4d6b812f03f
+          checksum/secret-core: 97ae385b1d5cf134a975247077c25bd8f26292fbb2c304e8ae4c36d37f2c80c6
+          checksum/secret-jobservice: 24f564853f192cb1f03d36032b98e4213d9258263ce6cc22b244ac4cb9fa747c
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/component: registry
+          app.kubernetes.io/instance: harbor
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: harbor
+          helm.sh/chart: harbor-11.1.6
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/component: registry
+                    app.kubernetes.io/instance: harbor
+                    app.kubernetes.io/name: harbor
+                namespaces:
+                - harbor
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        automountServiceAccountToken: false
+        containers:
+        - env:
+          - name: BITNAMI_DEBUG
+            value: "false"
+          envFrom:
+          - secretRef:
+              name: harbor-registry
+          image: docker.io/bitnami/harbor-registry:2.4.1-debian-10-r0
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /
+              port: registry
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: registry
+          ports:
+          - containerPort: 5000
+            name: registry
+            protocol: TCP
+          - containerPort: 5001
+            name: debug
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /
+              port: registry
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources: {}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /storage
+            name: registry-data
+          - mountPath: /etc/registry/root.crt
+            name: registry-root-certificate
+            subPath: tls.crt
+          - mountPath: /etc/registry/passwd
+            name: registry-htpasswd
+            subPath: passwd
+          - mountPath: /etc/registry/config.yml
+            name: registry-config
+            subPath: config.yml
+        - env:
+          - name: BITNAMI_DEBUG
+            value: "false"
+          - name: CORE_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: secret
+                name: harbor-core
+          - name: JOBSERVICE_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: secret
+                name: harbor-jobservice
+          envFrom:
+          - secretRef:
+              name: harbor-registry
+          image: docker.io/bitnami/harbor-registryctl:2.4.1-debian-10-r0
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /api/health
+              port: registryctl
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: registryctl
+          ports:
+          - containerPort: 8080
+            name: registryctl
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /api/health
+              port: registryctl
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources: {}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /storage
+            name: registry-data
+          - mountPath: /etc/registry/config.yml
+            name: registry-config
+            subPath: config.yml
+          - mountPath: /etc/registryctl/config.yml
+            name: registry-config
+            subPath: ctl-config.yml
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1001
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: registry-htpasswd
+          secret:
+            defaultMode: 420
+            items:
+            - key: REGISTRY_HTPASSWD
+              path: passwd
+            secretName: harbor-registry
+        - name: registry-root-certificate
+          secret:
+            defaultMode: 420
+            secretName: harbor-core
+        - configMap:
+            defaultMode: 420
+            name: harbor-registry
+          name: registry-config
+        - name: registry-data
+          persistentVolumeClaim:
+            claimName: harbor-registry
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2022-02-07T16:19:39Z"
+      lastUpdateTime: "2022-02-07T16:19:39Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2022-02-07T16:19:39Z"
+      lastUpdateTime: "2022-02-07T16:19:39Z"
+      message: ReplicaSet "harbor-registry-d857547f5" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

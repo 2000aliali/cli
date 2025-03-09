@@ -1,0 +1,8 @@
+---
+
+- name: Rendering cert manager manifest
+  local_action:
+    module: template
+    src: cert-manager.yaml.j2
+    dest: /app/ansible/cert-manager.yaml
+    unsafe_writes: yes

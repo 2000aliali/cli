@@ -1,0 +1,26 @@
+---
+
+- name: Rendering cert manager manifest
+  local_action:
+    module: template
+    src: postgres-cm.yml.j2
+    dest: /app/ansible/postgres/postgres-cm.yml
+    unsafe_writes: yes
+- name: Rendering cert manager manifest
+  local_action:
+    module: template
+    src: postgres-deploy.yml.j2
+    dest: /app/ansible/postgres/postgres-deploy.yml
+    unsafe_writes: yes
+- name: Rendering cert manager manifest
+  local_action:
+    module: template
+    src: postgres-pvc.yml.j2
+    dest: /app/ansible/postgres/postgres-pvc.yml
+    unsafe_writes: yes
+- name: Rendering cert manager manifest
+  local_action:
+    module: template
+    src: postgres-secret.yml.j2
+    dest: /app/ansible/postgres/postgres-secret.yml
+    unsafe_writes: yes

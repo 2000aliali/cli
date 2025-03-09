@@ -1,0 +1,14 @@
+- name: Rancher 2 Kubernetes Nodes - Admin Platform
+  hosts: rancher-2-kubernetes-nodes
+  become: yes
+  roles:
+    - role: s2m.rke.common
+      when: not skip_admin_prerequisite
+    - role: geerlingguy.firewall
+      when: not skip_admin_prerequisite
+
+- name: Create the Rancher 2 Cluster Config for RANCHER ADMINISTRATION PLATFORM
+  hosts: 127.0.0.1
+  connection: local
+  roles:
+    - s2m.rke_rancher_cluster

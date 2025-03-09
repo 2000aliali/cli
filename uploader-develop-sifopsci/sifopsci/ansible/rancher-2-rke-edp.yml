@@ -1,0 +1,6 @@
+
+- name: Rendering of EDP manifests
+  hosts: 127.0.0.1
+  connection: local
+  roles:
+    - s2m.rke_edp

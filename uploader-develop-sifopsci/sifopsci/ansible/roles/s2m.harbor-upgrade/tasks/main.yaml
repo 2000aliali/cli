@@ -1,0 +1,162 @@
+---
+
+- name: Stopping  Harbor 
+  shell: 
+    cmd: "docker-compose down"
+    chdir: "{{ harbor_data_path }}/harbor"
+
+- name: "Back up Harbor current files"
+  command: "mv {{ harbor_data_path }}/harbor /tmp/harbor_backup"
+    
+- name: "Back up the database"
+  command: "cp -r {{ harbor_data_path }}/database /tmp/"
+  
+- name: Check if harbor package exist on remote host
+  stat:
+    path: /tmp/{{ harbor_package_name}}
+  register: harbor_package
+
+- name: Copy the harbor package
+  copy:
+    src: "/app/{{ harbor_package_path  }}"
+    dest: /tmp/{{ harbor_package_name}}
+    mode: 0700
+  when: not harbor_package.stat.exists
+
+- name: Extract the harbor archive into remote hosts
+  unarchive:
+    src: /tmp/{{ harbor_package_name}}
+    dest: "{{ harbor_data_path }}/"
+    remote_src: yes  
+
+- name: loading harbor image
+  shell: 
+    cmd: "docker image load -i harbor.{{harbor_version}}.tar.gz"
+    chdir: "{{ harbor_data_path }}/harbor"
+
+#-name: Pulling harbor migrator image
+ # shell: 
+  #  cmd: "docker image load -i harbor/harbor-migrator-{{harbor_version}}.tar.gz"
+   # chdir: "{{ harbor_data_path }}/harbor"
+
+#-name: Patching harbor.yml file
+ # shell: 
+  #  cmd: "docker run -it --rm -v {{ harbor_data_path }}/harbor.yml:/harbor-migration/harbor-cfg/harbor.yml goharbor/harbor-migrator:{{harbor_version}} --cfg up"
+   # chdir: "{{ harbor_data_path }}/harbor"
+
+- name: Create the harbor configuration file
+  local_action:
+    module: template
+    src: harbor-2.7.0.yml.tmpl
+    dest: /app/harbor.yml
+    unsafe_writes: yes
+
+- name: copy harbor yml file to destination
+  copy:
+    src: /app/harbor.yml
+    dest: "{{ harbor_data_path }}/harbor/harbor.yml"
+    mode: 0777
+
+- name: Installation with Chart Repository Service 
+  shell: 
+    cmd: "sudo ./install.sh --with-chartmuseum"
+    chdir: "{{ harbor_data_path }}/harbor"
+  register: harbor_install
+
+- name: Start Harbor
+  shell: 
+    cmd: "docker-compose -f docker-compose.yml up -d"
+    chdir: "{{ harbor_data_path }}/harbor"
+  when: harbor_install.changed
+  register: compose_up
+
+
+- name: Check Harbor installation status
+  shell:
+    cmd: "docker-compose ps"
+    chdir: "{{ harbor_data_path }}/harbor"
+  when: compose_up.changed
+  register: compose_ps
+
+  
+- name: List of active Harbor containers
+  debug: msg="{{ compose_ps.stdout }}"
+
+- name: Emit Harbor URL
+  command: echo "Harbor can be accessed at, {{ harbor_ep_ssl }}"
+  when: compose_up.changed
+  register: harbor_url
+
+- name: Harbor URL info
+  debug: msg="{{ harbor_url.stdout }}"   
+
+- name: Sleep for 60s
+  shell: sleep 120
+
+- name: Harbor URL info
+  debug: msg="{{ harbor_password }}"   
+
+- name: Create Rancher Harbor Project
+  uri:
+    url: "{{ harbor_ep_ssl }}/api/v2.0/projects"
+    user: admin
+    password: "{{ harbor_password }}"
+    force_basic_auth: yes
+    status_code: 201
+    method: POST
+    src: rancher.json  
+    validate_certs: no
+    headers:
+      Content-Type: "application/json"
+       
+- name: Create quay.io Harbor Project
+  uri:
+    url: "{{ harbor_ep_ssl }}/api/v2.0/projects"
+    user: admin
+    password: "{{ harbor_password }}"
+    force_basic_auth: yes
+    status_code: 201
+    method: POST
+    validate_certs: no
+    src: quay.json
+    headers:
+      Content-Type: "application/json"
+
+- name: Create Push Payment Harbor Project
+  uri:
+    url: "{{ harbor_ep_ssl }}/api/v2.0/projects"
+    user: admin
+    password: "{{ harbor_password }}"
+    force_basic_auth: yes
+    status_code: 201
+    validate_certs: no
+    method: POST
+    src: pp.json
+    headers:
+      Content-Type: "application/json"
+
+- name: Create Middleware Harbor Project
+  uri:
+    url: "{{ harbor_ep_ssl }}/api/v2.0/projects"
+    user: admin
+    password: "{{ harbor_password }}"
+    force_basic_auth: yes
+    validate_certs: no
+    status_code: 201
+    method: POST
+    src: middleware.json
+    headers:
+      Content-Type: "application/json"
+
+- name: Create Minio Harbor Project
+  uri:
+    url: "{{ harbor_ep_ssl }}/api/v2.0/projects"
+    user: admin
+    password: "{{ harbor_password }}"
+    force_basic_auth: yes
+    validate_certs: no
+    status_code: 201
+    method: POST
+    src: minio.json
+    headers:
+      Content-Type: "application/json"

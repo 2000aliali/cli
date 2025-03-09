@@ -1,0 +1,37 @@
+all_in_one: false
+minio_ca: ''
+ansible_os_family: RedHat
+ansible_ssh_pass: 'mmeliani@23'
+#ansible_ssh_private_key_file: /home/meliani/OFFLINE_SSH_KEY.pem
+ansible_sudo_pass: 'mmeliani@23'
+ansible_user: mmeliani
+certManager_registry: quay.io/jetstack
+cluster_name: rke
+clusterbackup: false
+data_root: /var/lib/docker
+harbor_data_path: /data
+harbor_endpoint: harbor-factory.s2m.ma
+harbor_ep_ssl: http://harbor-factory.s2m.ma
+harbor_ip: ''
+harbor_password: admin122345A
+harbor_ssl: false
+minio_ssl: false
+kubernetes_supported_versions:
+  '1.19': v1.19.16-rancher1-1
+  '1.20': v1.20.11-rancher1-1
+  '1.21': v1.21.6-rancher1-1
+  '1.22': v1.22.5-rancher1-1
+kubernetes_version: '1.22'
+offline: false
+platform_files_directory: /app/opt/platform/gimtel-prod
+rancher_version: v2.6.3
+rke_binary_url: https://github.com/rancher/rke/releases/download/{{ rke_release }}/rke_linux-amd64
+rke_kubernetes_version: '{{ kubernetes_supported_versions[kubernetes_version] }}'
+rke_release: v1.3.1
+rke_version: 1.24.8
+skip_admin_prerequisite: false
+skip_app_prerequisite: false
+skip_minio: false
+topic_suffix: pp-toto
+users:
+- username: root

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: schema-registry-client
+  namespace: {{ kafka_namespace }}
+  labels:
+    app: cp-registry
+spec:
+  ports:
+  - name: schema-registry-client
+    port: 8081
+    targetPort: 8081
+    protocol: TCP
+  selector:
+    name: cp-registry

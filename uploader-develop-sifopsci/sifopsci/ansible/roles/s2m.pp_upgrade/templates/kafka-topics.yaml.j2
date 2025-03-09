@@ -1,0 +1,1332 @@
+apiVersion: v1
+items:
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-update-position-institution-credit-request-0001
+    namespace: kafka
+  spec:
+    config: {}
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-update-position-institution-debit-request-0001
+    namespace: kafka
+  spec:
+    config: {}
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-act-producing-togsimt-request-0001
+    namespace: kafka
+  spec:
+    config: {}
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-api-investigation-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-api-investigation-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-credit-confirmation-transaction-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-credit-confirmation-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-credit-startworkflow-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-abort-bank-credit-transaction-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-abort-bank-credit-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-abort-bank-transaction-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-abort-bank-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-confirm-bank-credit-transaction-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-confirm-bank-credit-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-confirm-bank-transaction-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-confirm-bank-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-credit-transaction-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-credit-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-ctrl-bank-credit-transaction-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-ctrl-bank-credit-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-debit-transaction-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doexecutionchain-debit-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-dointerface-canaux-update-message-debit-request-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-dointerfaceiso-send-debit-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doparameters-create-or-update-current-day-session-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doparameters-create-or-update-default-sessions-operation-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doparameters-create-or-update-institution-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doparameters-create-or-update-limit-institution-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doparameters-create-or-update-payment-operation-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-doparameters-create-or-update-timer-operation-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-external-gen-cancellation-kafka-completed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-external-gen-cancellation-kafka-failed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-external-gen-cancellation-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-external-gen-cancellation-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-gen-cancellation-kafka-completed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-gen-cancellation-kafka-failed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-gen-cancellation-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-gen-cancellation-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-gen-cancellation-response-kafka-completed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-gen-cancellation-response-kafka-failed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-gen-cancellation-response-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-gen-cancellation-response-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-get-request-details-ec-kafka-completed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-get-request-details-ec-kafka-failed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-get-request-details-ec-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-get-request-details-ec-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-get-request-details-kafka-completed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-get-request-details-kafka-failed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-get-request-details-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-get-request-details-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-get-request-details-re-kafka-completed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-get-request-details-re-kafka-failed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-get-request-details-re-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-get-request-details-re-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-init-debit-ocherstrator-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-init-debit-request-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-jms-message-credit-pacs008-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-notify-orchetrator-send-pacs002-acsc-accc-credit-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-notify-orchetrator-send-pacs002-acsc-accc-debit-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-notify-orchetrator-send-pacs002-acsc-accc-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-reception-acknowledge-kafka-request-0001
+    namespace: kafka
+  spec:
+    config: {}
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-reception-camt029-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-reception-camt056-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-reception-pacs002-credit-acsp-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-reception-pacs002-credit-rjct-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-reception-pacs002-debit-acsp-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-reception-pacs002-debit-rjct-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-reception-pacs002-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-reception-pacs004-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-reception-pacs028-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-return-request-transaction-kafka-completed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-return-request-transaction-kafka-failed-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-return-request-transaction-kafka-reply-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-return-request-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-save-institution-activity-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-camt029-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-camt056-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-acc4-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-accc1-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-accc2-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-accc3-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-accp1-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-accp2-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-accp3-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-accp4-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-acsc1-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-acsc2-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-acsc3-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-acsc4-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-rjct1-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-rjct2-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-rjct3-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs002-rjct4-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs004-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs008-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-send-pacs028-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-synthese-ope-operation-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      max.message.bytes: "10485880"
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-synthese-ope-operation-special-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      max.message.bytes: "10485880"
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-synthese-opr-operation-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      max.message.bytes: "10485880"
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-synthese-opr-operation-special-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      max.message.bytes: "10485880"
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-synthese-rgl-operation-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      max.message.bytes: "10485880"
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-trace-api-cbs-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-trace-pacs-jms-kafka-request-0001
+    namespace: kafka
+  spec:
+    config: {}
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-trace-pacs-jms-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-update-create-credit-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-update-request-status-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+
+
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-update-update-reconciliation-status-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-orchestrator-api-status-debit-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-payment-params-credit-request-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaTopic
+  metadata:
+    labels:
+      strimzi.io/cluster: kafka-cluster
+    name: nxp-{{ topic_suffix }}-payment-params-debit-request-transaction-kafka-request-0001
+    namespace: kafka
+  spec:
+    config:
+      retention.ms: "50000000"
+    partitions: 4
+    replicas: 3
+
+kind: List
+metadata:
+  selfLink: ""
+
+

@@ -1,0 +1,8 @@
+---
+
+- name: Rendering Vault Manifests
+  local_action:
+    module: template
+    src: vault-values.yml.j2
+    dest: /app/ansible/vault-values.yml
+    unsafe_writes: yes

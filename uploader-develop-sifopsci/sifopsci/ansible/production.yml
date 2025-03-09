@@ -1,0 +1,41 @@
+all:
+  children:
+    rancher-2-controlplane:
+      hosts:
+        rke-cp-0: null
+    rancher-2-harbor:
+      hosts:
+        rke-harbor: null
+    rancher-2-kubernetes-nodes:
+      hosts:
+        rke-rancher-0: null
+    rancher-2-minio:
+      hosts:
+        rke-minio: null
+    rancher-2-workers:
+      hosts:
+        rke-worker-0: null
+  hosts:
+    rke-cp-0:
+      ansible_host:
+    rke-cp-1:
+      ansible_host:
+    rke-cp-2:
+      ansible_host:
+    rke-harbor:
+      ansible_host:
+    rke-minio:
+      ansible_host:
+    rke-rancher-0:
+      ansible_host:
+    rke-rancher-1:
+      ansible_host:
+    rke-rancher-2:
+      ansible_host:
+    rke-worker-0:
+      ansible_host:
+    rke-workercns-0:
+      ansible_host:
+    rke-workercns-1:
+      ansible_host:
+

@@ -1,0 +1,7 @@
+rabbit pwd: kEqH68uUoX
+helm  --kubeconfig kube.yml -nbackoffice install trace backoffice/tracing-service/itarone-tracing-service  --create-namespace
+helm install  --kubeconfig kube.yml -nbackoffice apicrud backoffice/minassat-backend/minassat-backend/
+helm --kubeconfig kube.yml -n backoffice  install apisearch  backoffice/minassat-search/minassat-search/
+
+pv migration:
+pv-migrate --log-level debug migrate  -s local -i  --source-kubeconfig backup_cluster.yaml --source-namespace default --dest-kubeconfig kube.yml --dest-namespace frontoffice backend-pvc backend-pvc

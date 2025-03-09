@@ -1,0 +1,5 @@
+- name: Rendering of SIF PLATFORM COMMON SERVICES
+  hosts: 127.0.0.1
+  connection: local
+  roles:
+    - s2m.rke_keycloak

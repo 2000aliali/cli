@@ -1,0 +1,32 @@
+apiVersion: v1
+data:
+  password: c3VwZXJTZWNyZXQ=
+  username: cG9zdGdyZXM=
+kind: Secret
+metadata:
+  name: edp-superuser
+type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.k8s.enterprisedb.io/v1
+kind: Cluster
+metadata:
+  name: cluster-edp
+spec:
+  bootstrap:
+    initdb:
+      database: bitnami_keycloak
+      encoding: UTF8
+      localeCType: C
+      localeCollate: C
+      owner: postgres
+      secret:
+        name: edp-superuser
+  superuserSecret:
+    name: edp-superuser
+  affinity:
+    podAntiAffinityType: required
+  imageName: "{{ edp_registry }}/postgresql:15.0"
+  instances: 2
+  primaryUpdateStrategy: unsupervised
+  storage:
+    size: 10Gi

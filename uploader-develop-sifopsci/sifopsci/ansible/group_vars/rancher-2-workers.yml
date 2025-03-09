@@ -1,0 +1,32 @@
+docker_version: "20.10"
+
+firewall_allowed_tcp_ports:
+  - "6443"
+  - "2379"
+  - "2380"
+  - "9099"
+  - "10250"
+  - "10254"
+  - "2376"
+  - "179"
+  - "443"
+  - "22"
+  - "5473"
+  - "8472"
+  - "9796"
+  - "111"
+  - "2049"
+
+firewall_allowed_udp_ports:
+  - "4789"
+  - "8472"
+  - "111"
+  - "2049"
+
+
+
+firewall_additional_rules:
+  - "iptables -A INPUT -p tcp --match multiport --dports 30000:32767 -j ACCEPT"
+  - "iptables -A INPUT -p udp --match multiport --dports 30000:32767 -j ACCEPT"
+
+ansible_os_family: "RedHat"

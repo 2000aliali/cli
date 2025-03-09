@@ -1,0 +1,8 @@
+all:
+  children:
+    rancher-2-harbor:
+      hosts:
+        rke-harbor: null
+  hosts:
+    rke-harbor:
+      ansible_host: 192.168.10.5

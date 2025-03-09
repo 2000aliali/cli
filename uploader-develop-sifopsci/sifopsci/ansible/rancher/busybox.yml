@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostalias
+  namespace: default
+spec:
+  hostAliases:
+  - ip: '10.11.20.10'
+    hostnames:
+    - "rancher.hadith.ma"
+    - "harbor.hadith.ma"
+  restartPolicy: Always
+  containers:
+  - name: cat-hosts
+    image: busybox
+    command:
+    - sleep
+    - "300000"

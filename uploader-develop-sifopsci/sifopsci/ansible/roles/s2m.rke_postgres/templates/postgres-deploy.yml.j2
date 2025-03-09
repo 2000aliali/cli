@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment # Create a deployment
+metadata:
+  name: postgres # Set the name of the deployment
+spec:
+  replicas: {{ postgres_replicas }}
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          env:
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: postgresqlPassword
+          image: {{ postgres_registry }}/postgres:14.5
+          args:
+          - -c
+          - max_connections=2000
+          - -c
+          - shared_buffers=1024MB
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432 
+          envFrom:
+            - configMapRef:
+                name: postgres-cm
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgresdata
+              subPath: postgres
+      volumes:
+        - name: postgresdata
+          persistentVolumeClaim:
+            claimName: postgres-volume-claim

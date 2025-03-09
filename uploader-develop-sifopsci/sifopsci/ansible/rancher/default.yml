@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"default-http-backend"},"name":"default-http-backend","namespace":"ingress-nginx"},"spec":{"ports":[{"port":80,"targetPort":8080}],"selector":{"app":"default-http-backend"}}}
+  creationTimestamp: "2021-12-28T00:53:07Z"
+  labels:
+    app: default-http-backend
+  name: default-http-backend
+  namespace: ingress-nginx
+  resourceVersion: "827"
+  uid: 33710f4b-d5ee-4ee4-b14c-b6df43af3036
+spec:
+  clusterIP: 10.43.120.121
+  clusterIPs:
+  - 10.43.120.121
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: default-http-backend
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

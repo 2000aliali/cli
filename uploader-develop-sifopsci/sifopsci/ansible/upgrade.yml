@@ -1,0 +1,9 @@
+---
+
+- name: upgrade option
+  hosts: 127.0.0.1
+  connection: local
+  become: yes
+  roles:
+    - s2m.pp_upgrade
+  

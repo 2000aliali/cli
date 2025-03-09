@@ -1,0 +1,23 @@
+- name: Rancher 2 Kubernetes Nodes - App Platform
+  hosts: rancher-2-controlplane
+  become: yes
+  roles:
+    - role: s2m.rke.common
+      when: not skip_app_prerequisite
+    - role: geerlingguy.firewall
+      when: not skip_app_prerequisite
+
+- name: Rancher 2 Kubernetes Nodes - App Platform
+  hosts: rancher-2-workers
+  become: yes
+  roles:
+    - role: s2m.rke.common
+      when: not skip_app_prerequisite
+    - role: geerlingguy.firewall
+      when: not skip_app_prerequisite
+
+- name: Create the Rancher 2 Cluster Config for APP PLATFORM
+  hosts: 127.0.0.1
+  connection: local
+  roles:
+    - s2m.rke_cluster

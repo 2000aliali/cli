@@ -1,0 +1,5 @@
+- name: Rancher 2 Kubernetes Nodes - OFFLINE LOAD
+  hosts: rancher-2-harbor
+  become: yes
+  roles:
+    - s2m.postgresql.offline.load

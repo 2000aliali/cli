@@ -1,0 +1,7 @@
+---
+
+- name: set topic suffixes
+  template:
+    src: kafka-topics.yaml.j2
+    dest: /app/ansible/kafka/kafka-topics.yaml
+    unsafe_writes: yes

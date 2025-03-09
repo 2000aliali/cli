@@ -1,0 +1,37 @@
+apiVersion: v1
+data:
+  Corefile: |
+    .:53 {
+        errors
+        health {
+          lameduck 5s
+        }
+        hosts /etc/coredns/customdomains.db hadith.ma hadithm6.ma {
+          fallthrough
+        }
+        ready
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+          pods insecure
+          fallthrough in-addr.arpa ip6.arpa
+        }
+        prometheus :9153
+        forward . "/etc/resolv.conf"
+        cache 30
+        loop
+        reload
+        loadbalance
+    }
+  customdomains.db: |
+    10.11.20.10 rancher.hadith.ma
+    10.11.20.10 harbor.hadith.ma
+    10.11.20.11 keycloak.hadithm6.ma
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"Corefile":".:53 {\n    errors\n    health {\n      lameduck 5s\n    }\n    ready\n    kubernetes cluster.local in-addr.arpa ip6.arpa {\n      pods insecure\n      fallthrough in-addr.arpa ip6.arpa\n    }\n    prometheus :9153\n    forward . \"/etc/resolv.conf\"\n    cache 30\n    loop\n    reload\n    loadbalance\n}\n"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"coredns","namespace":"kube-system"}}
+  creationTimestamp: "2021-12-29T15:01:58Z"
+  name: coredns
+  namespace: kube-system
+  resourceVersion: "2415570"
+  uid: 97508227-194c-40db-91c4-92f63d45793a

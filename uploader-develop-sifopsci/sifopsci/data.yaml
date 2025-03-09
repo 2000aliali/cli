@@ -1,0 +1,93 @@
+installation_mode: offline
+#rke_version: "1.24.8"
+platform_version: "1.1.0"
+platform_name: "SGABS"
+platform_fqdn: "sgabs.ma"
+system:
+  authMethod: "" # password
+  username: ec2-user
+  password: "Gimtel-2022"
+  ssh_private_key: "/app/opt/platform/SGABS/OFFLINE_SSH_KEY.pem"
+minio:
+  enabled: true
+  ip: ""
+  accessId: minio_admin
+  accessKey: ezaezaeezaea=
+  host: minio.s2m.ma
+  data_path: "/minio"
+  ssl:
+    enabled: true
+harbor:
+  ip: "172.31.32.136"
+  external_url: harbor.sgabs.ma
+  data_path: "/data"
+  admin_password: "sgabs123@23"
+  ssl:
+    enabled: false
+rancher:
+  version: 2.7.0
+  host: rancher.sgabs.ma
+  rancher_count: 1
+  ips: ["ec2-3-15-0-44.us-east-2.compute.amazonaws.com","ec2-18-188-251-134.us-east-2.compute.amazonaws.com","ec2-3-140-195-103.us-east-2.compute.amazonaws.com"]
+rancher-rke:
+  s3Backups:
+    enabled: false
+    interval_hours: 12
+    retention: 6
+    bucket_name: rke-etcd
+  control_plane_ips: ["18.218.158.60","3.15.236.227","3.19.67.79"]
+  worker_ips: ["3.143.68.60","52.14.22.35","18.221.215.103","18.117.81.95","18.191.89.225"]
+  worker_cns: ["3.145.128.254","3.142.83.205","3.23.115.218"]
+cns:
+  data_path: "" #"/var/lib/longhorn/"
+  default_replica_count: 3
+middleware:
+  keycloak:
+    enabled: false
+    ha: true
+    admin_password: c3VwZXJTZWNyZXQ=
+    host: ckey.sgabs.ma
+    storage_class: "longhorn"
+    storage_size: "10Gi"
+  kafka:
+    enabled: false
+    replication_factor: 3
+    topic_replication_factor: 1
+    brokerXms: 1100m
+    brokerXmx: 1100m
+    brokerMemory: 800Mi
+    brokerPvSize: 5Gi
+    zookeeperXms: 500m
+    zookeeperXmx: 500m
+    zookeeperMemory: 500Mi
+    zookeeperPvSize: 5Gi
+    broker_count: 3
+    zookeeper_count: 3 
+    akhqHost: "akhq.sgabs.ma"
+  postgresql:
+    count: 1
+    enabled: false
+    storage_size: 10Gi
+    password: cGFzc3dvcmQ=
+  elk:
+    enabled: false
+  vault:
+    enabled: false
+    host: vault.gimtel.mr
+    storage_class: "longhorn"
+  rancher-monitoring:
+    enabled: false
+profiles:
+  #mobile-ptf:
+   # enabled: false
+    #version: 2.0.2
+  #mobile-switch:
+  #  enabled: false
+  #  version: 2.0.107
+  push-payment:
+    enabled: true
+    version: 1.1.0
+    topicsuffix: "pp-toto"
+  #itsp:
+  #  enabled: false
+  #  version: 

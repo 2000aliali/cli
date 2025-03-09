@@ -1,0 +1,32 @@
+#{{ ansible_managed }}
+cluster_name: "{{ cluster_name }}"
+
+nodes:
+  {% for host in groups['rancher-2-kubernetes-nodes'] %}
+{% if hostvars[host]['ansible_host'] and hostvars[host]['ansible_host']|length %}
+- address: "{{ hostvars[host]['ansible_host'] }}"
+    user: "{{ hostvars[host].users[0].username }}" 
+    role: [controlplane,worker,etcd] 
+{% endif %}
+  {% endfor %}
+
+ssh_key_path: /root/.ssh/id_rsa
+{% if offline %}
+system_images:
+  kubernetes: {{ harbor_endpoint }}/rancher/hyperkube:v{{ rke_version }}
+{% else %}
+system_images:
+  kubernetes: rancher/hyperkube:v{{ rke_version }}
+{% endif %}
+
+
+{% if offline %}
+private_registries:
+  - url: {{ harbor_endpoint }}
+    user: admin
+    password: {{ harbor_password }}
+    is_default: true
+{% endif %}
+
+network:
+  plugin: calico

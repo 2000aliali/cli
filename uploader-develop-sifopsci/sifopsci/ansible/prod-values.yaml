@@ -1,0 +1,1033 @@
+global:
+  pinpoint:
+    enabled: 'false'
+  registry: 'harbor.doc.offline.s2m.ma/container-registry.dev.s2m.ma/push-payment'
+  registry1: "harbor.doc.offline.s2m.ma/docker.io/bitnami"
+  imagePullSecrets:
+  - name: regsecret
+  producer:
+    acks: '1'
+  shemaRegister:
+    url: schema-registry-client.kafka
+    port: '8081'
+  kafka:
+    createTopics: true
+    ssl:
+      keyStore:
+        path: '#{null}'
+        password: I3tudWxsfQo=
+      trustStore:
+        path: '#{null}'
+        password: I3tudWxsfQo=
+    jeager:
+      host: my-jaeger-agent.observability
+    topic:
+      initDebitRequest:
+        rf: "3"
+        topicNo: "no-pp-0005"
+      synthOpSpecial:
+        rf: '3'
+        topicNo: "no-pp-000002"
+      orchestratorInitDebit:
+        rf: '3'
+        topicNo: no-pp-0004
+      notificationAcknowledged:
+        rf: "3"
+        topicNo: "no-pp-0002"
+      notificationMessage:
+        rf: "3"
+        topicNo: "no-pp-000002"
+      dointerfaceCanauxUpdateMessageDebit:
+        rf: "3"
+        topicNo: "no-pp-000007" 
+      getRequestDetailsClrsysref:
+        rf: "3"
+        topicNo: "no-pp-0003"
+      calculatFees:
+        rf: "3"
+        topicNo: no-pp-00003
+      genCancellationResponse:
+        rf: "3"
+        topicNo: no-pp-05
+      genCancellation:
+        rf: "3"
+        topicNo: no-pp-02
+      dointerfaceisoGenerateDebitRequest:
+        rf: "3"
+        topicNo: no-pp-000004
+      dointerfaceCanauxUpdateMessageDebit:
+        rf: "3"
+        topicNo: no-pp-000007
+      startCreditWorkflow:
+        rf: "3"
+        topicNo: no-pp-000002
+      updateCreditRequest:
+        rf: "3"
+        topicNo: no-pp-00004
+      updateStatusAndCancellationRec:
+        rf: "3"
+        topicNo: no-pp-000005
+      orchestratorInitDebit:
+        rf: "3"
+        topicNo: no-pp-0004
+      orchestratorUpdateStatus:
+        rf: "3"
+        topicNo: no-pp-000007
+      notifyOrchestratorSendPacs002AcscAccc:
+        rf: "3"
+        topicNo: "no-pp-03"
+      generateMsgCredit:
+        pacs002:
+          topicNo: "no-pp-01"
+      apiInvestigation:
+        rf: "3"
+        topicNo: no-pp-000002
+      getRequestDetailsEc:
+        rf: "3"
+        topicNo: no-pp-0005
+      getRequestDetails:
+        rf: "3"
+        topicNo: no-pp-0004
+      reception:
+        pacs004:
+          topicNo: no-pp-02
+        pacs002:
+          topicNo: no-pp-025
+        pacs028:
+          topicNo: no-pp-02
+        camt029:
+          topicNo: no-pp-02
+        camt056:
+          topicNo: no-pp-02
+      send:
+        pacs002:
+          topicNo: no-pp-02
+          acscAccc:
+            topicNo: no-pp-03
+        camt029:
+          topicNo: no-pp-02
+        pacs004:
+          topicNo: no-pp-02
+        pacs008:
+          topicNo: no-pp-02
+        pacs028:
+          topicNo: no-pp-02
+        camt056:
+          topicNo: no-pp-02
+      genrateCancellationResponse:
+        rf: "3"
+        topicNo: no-pp-06
+      genrateCancellation:
+        rf: "3"
+        topicNo: no-pp-03
+      updateStatus:
+        rf: "3"
+        topicNo: no-pp-000005
+      messageCancellationPacs002:
+        topicNo: no-pp-000005
+      jmsMessageCreditConfirmation:
+        rf: "3"
+        topicNo: no-pp-000003
+      jmsMessageCredit:
+        rf: "3"
+        topicNo: no-pp-000007
+      doInterfaceIsoSendDebit:
+        rf: "3"
+        topicNo: no-pp-0009
+      dointerfaceisoSendDebitRequest:
+        rf: "3"
+        topicNo: no-pp-0009
+      updateMessageDebit:
+        topicNo: no-pp-000008
+      doInterfaceIsoGenerateDebit:
+        rf: "3"
+        topicNo: no-pp-000005
+      orchestratorReturnRequest:
+        rf: "3"
+        topicNo: no-pp-000007
+      orchestratorEnvistigation:
+        rf: "3"
+        topicNo: no-pp-000007
+      doexecutionChainCreditConfirmation:
+        rf: "3"
+        topicNo: no-pp-000004
+      doexecutionChainCreditRequest:
+        rf: "3"
+        topicNo: no-pp-000005
+      doExecutionChainDebitRequest:
+        rf: "3"
+        topicNo: no-pp-000002
+      partition: '#{null}'
+      partitionNum: '12'
+    request:
+      timeOutMs: '50000'
+    userInfo: '#{null}'
+    topicSufixe: integ-tnk4
+    bootstratpServer:
+      url: kafka-cluster-kafka-bootstrap.kafka
+      port: '9092'
+    requestTimeOutMs: '50000'
+    retryBackoffMs: '5000'
+    consumer:
+      autoOffsetReset: latest
+      enableAutoCommit: 'false'
+      groupId: interface-iso-group
+ui-service:
+  image:
+    reposiroty: 'pp-ui-service'
+    tag: 0.14.56-prod
+  securityContext:
+    runAsUser: 101
+  strategy:
+    type: Recreate
+  readinessProbe:
+    enabled: false
+  livenessProbe:
+    enabled: false
+  resources:
+    limits:
+      cpu: 580m
+      memory: 512Mi
+    requests:
+      cpu: 280m
+      memory: 512Mi
+  enabled: true
+  replicaCount: 1
+interface-iso-service:
+  image:
+    reposiroty: ''
+    tag: 0.14.77
+  datasource:
+    image:
+      repository: "postgresql-repmgr"
+      tag: "11.15.0-debian-10-r14"
+    driverClassName: "org.postgresql.Driver"
+    initializationMode: "never"
+    platform: "POSTGRES"
+    jdbc: "postgresql"
+    rdbms:
+      host: "postgres-postgresql-ha-pgpool.postgresql.svc.cluster.local"
+      port: "5432"
+    db:
+      name: "centralapi_db"
+      username: "postgres"
+      password: "c2dtYXJvY0AyMw=="
+  jpa:
+    database: "POSTGRESQL"
+    databasePlatform: "org.hibernate.dialect.PostgreSQL94Dialect"
+    generateDdl: "false"
+    hibernate:
+      ddlAuto: "update"
+    showSql: "true"
+  readinessProbeSql:
+    enabled: false
+  livenessProbeSql:
+    enabled: false
+  cors:
+    allowedAddresses: "https://pp-service.sgmaroc.root.net"
+  dependencies:
+    parameters:
+      name: "parameters"
+      url: "http://pp-parameters-service.push-payment:9090/"
+  requestRegister:
+      name: "request-register"
+      url: "http://pp-request-register-service.push-payment:9090/"
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 81
+    periodSeconds: 38
+    timeoutSeconds: 8
+  livenessProbe:
+    initialDelaySeconds: 80
+    periodSeconds: 67
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 580m
+      memory: 512Mi
+    requests:
+      cpu: 580m
+      memory: 512Mi
+  enabled: true
+  replicaCount: 1
+  keycloak:
+    host: "http://ckey-keycloak.keycloak:80/auth"
+    secret: "XDuqTV2Cfofq5ikGDpjlaGBRIOKPQ6Zm"
+backend-ui-service:
+  image:
+    reposiroty: ''
+    tag: 0.0.28
+  datasource:
+    image:
+      repository: "postgresql-repmgr"
+      tag: "11.15.0-debian-10-r14"
+    driverClassName: "org.postgresql.Driver"
+    initializationMode: "never"
+    platform: "POSTGRES"
+    jdbc: "postgresql"
+    rdbms:
+      host: "postgres-postgresql-ha-pgpool.postgresql.svc.cluster.local"
+      port: "5432"
+    db:
+      username: "postgres"
+      password: "c2dtYXJvY0AyMw=="
+  jpa:
+    database: "POSTGRESQL"
+    databasePlatform: "org.hibernate.dialect.PostgreSQL94Dialect"
+    generateDdl: "false"
+    hibernate:
+      ddlAuto: "update"
+    showSql: "true"
+  readinessProbeSql:
+    enabled: false
+  livenessProbeSql:
+    enabled: false
+  dependencies:
+    centralApiName: "interface-iso"
+    centralApiUrl: "http://pp-interface-iso-service.push-payment:9090/"
+    parametrageName: "parameters"
+    parametrageUrl: "http://pp-parameters-service.push-payment:9090/"
+  cors:
+    allowedAddresses: "https://pp-service.sgmaroc.root.net"
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 61
+    periodSeconds: 48
+    timeoutSeconds: 8
+  livenessProbe:
+    initialDelaySeconds: 301
+    periodSeconds: 77
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 500m
+      memory: 750Mi
+    requests:
+      cpu: 500m
+      memory: 750Mi
+  enabled: true
+  replicaCount: 1
+  keycloak:
+    secret: "IvjWbrnmYHJOIBoWTepkz3IK1lARPriA"
+    host: "http://ckey-keycloak.keycloak:80/auth"
+execution-chain-service:
+  image:
+    reposiroty: ''
+    tag: 0.14.60
+  api:
+    tls:
+      enabled: true
+  datasource:
+    image:
+      repository: "postgresql-repmgr"
+      tag: "11.15.0-debian-10-r14"
+    driverClassName: "org.postgresql.Driver"
+    initializationMode: "never"
+    platform: "POSTGRES"
+    jdbc: "postgresql"
+    rdbms:
+      host: "postgres-postgresql-ha-pgpool.postgresql.svc.cluster.local"
+      port: "5432"
+    db:
+      username: "postgres"
+      password: "c2dtYXJvY0AyMw=="
+  jpa:
+    database: "POSTGRESQL"
+    databasePlatform: "org.hibernate.dialect.PostgreSQL94Dialect"
+    generateDdl: "false"
+    hibernate:
+      ddlAuto: "update"
+    showSql: "true"
+  readinessProbeSql:
+    enabled: false
+  livenessProbeSql:
+    enabled: false
+  dependencies:
+    interfaceIso:
+      name: "interface-iso"
+      url: "http://pp-interface-iso-service.push-payment:9090/"
+    parameters:
+      name: "parameters"
+      url: "http://pp-parameters-service.push-payment:9090/"
+  apigatewaycbs:
+    controlbank:
+      name: apigatewaycbs
+      url: http://pp-gsimt-mock.push-payment:9090/
+      servicePath: /api/sgma/controlbank
+    sgma:
+      name: apigatewaycbsSgma
+      url: https://apirecette.sgmaroc.root.net/api/transaction/instant-transfer-service/v1
+      servicePath: /transfers/instant/nxp
+    daa:
+      name: apigatewaycbsDaa
+      url: https://apirecette.sgmaroc.root.net/api/transaction/instant-transfer-service/v1/transfers
+      servicePath: /instant/nxp
+  keycloakSg:
+    realm: "realm-api"
+    authServerUrl: "https://apirecette.sgmaroc.root.net/auth/"
+    credentials:
+      resource: "nxp-bff"
+      secret: "a697bb6f-5c4c-4beb-80da-fd6c8cfc79b2"
+  apigatewaycbsMock:
+    controlbank:
+      name: apigatewaycbs
+      url: http://pp-gsimt-mock.push-payment:9090/
+      servicePath: /api/sgma/controlbank
+    sgma:
+      name: apigatewaycbsSgma
+      url: http://pp-gsimt-mock.push-payment:9090/
+      servicePath: /transfers/instant/nxp
+    daa:
+      name: apigatewaycbsDaa
+      url: http://pp-gsimt-mock.push-payment:9090/transfers/
+      servicePath: /instant/nxp
+  keycloakSgMock:
+    realm: "PUSH_PAYMENT"
+    authServerUrl: "http://ckey-keycloak.keycloak:80/auth"
+    credentials:
+      resource: "nxp-mock"
+      secret: "bVtD4yxnxjeOtCW5SteIBrjtWykw2MIQ"
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 81
+    periodSeconds: 23
+    timeoutSeconds: 7
+  livenessProbe:
+    initialDelaySeconds: 80
+    periodSeconds: 57
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 850m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 512Mi
+  enabled: true
+  replicaCount: 2
+  keycloak:
+    secret: "BhaAxGJLwRJFcxf48soFJPdjBQY5yMbq"
+    host: "http://ckey-keycloak.keycloak:80/auth"
+gsimt-mock:
+  datasource:
+    image:
+      repository: "postgresql-repmgr"
+      tag: "11.15.0-debian-10-r14"
+    driverClassName: "org.postgresql.Driver"
+    initializationMode: "never"
+    platform: "POSTGRES"
+    jdbc: "postgresql"
+    rdbms:
+      host: "postgres-postgresql-ha-pgpool.postgresql.svc.cluster.local"
+      port: "5432"
+    db:
+      username: "postgres"
+      password: "c2dtYXJvY0AyMw=="
+  jpa:
+    database: "POSTGRESQL"
+    databasePlatform: "org.hibernate.dialect.PostgreSQL94Dialect"
+    generateDdl: "false"
+    hibernate:
+      ddlAuto: "update"
+    showSql: "true"
+  readinessProbeSql:
+    enabled: false
+  livenessProbeSql:
+    enabled: false
+  cors:
+    allowedAddresses: "https://pp-service.sgmaroc.root.net"
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+    - host: pp-gsimt-mock-service.sgmaroc.root.net
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+  keycloak:
+    host: http://ckey-keycloak.keycloak:80/auth
+    realm: PUSH_PAYMENT
+    resource: central-api
+    principalAttribute: preferred_username
+    secret: XDuqTV2Cfofq5ikGDpjlaGBRIOKPQ6Zm
+    bearerOnly: 'true'
+    addonEnable: 'true'
+    unprotectedPath: /public/**, /actuator/**,/instant/**,/api/paymentRequest/*/status,/api/paymentRequest/status/**,/api/message/byRefAndTrxType/*
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 240
+    periodSeconds: 44
+    timeoutSeconds: 9
+  livenessProbe:
+    initialDelaySeconds: 300
+    periodSeconds: 60
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 300m
+      memory: 512Mi
+    requests:
+      cpu: 300m
+      memory: 512Mi
+  enabled: true
+  replicaCount: 1
+  keycloak:
+    host: "http://ckey-keycloak.keycloak:80/auth"
+  image:
+    reposiroty: ''
+    tag: 0.1.30
+interface-canaux-service:
+  image:
+    reposiroty: ''
+    tag: 0.14.30
+  datasource:
+    image:
+      repository: "postgresql-repmgr"
+      tag: "11.15.0-debian-10-r14"
+    driverClassName: "org.postgresql.Driver"
+    initializationMode: "never"
+    platform: "POSTGRES"
+    jdbc: "postgresql"
+    rdbms:
+      host: "postgres-postgresql-ha-pgpool.postgresql.svc.cluster.local"
+      port: "5432"
+    db:
+      username: "postgres"
+      password: "c2dtYXJvY0AyMw=="
+  jpa:
+    database: "POSTGRESQL"
+    databasePlatform: "org.hibernate.dialect.PostgreSQL94Dialect"
+    generateDdl: "false"
+    hibernate:
+      ddlAuto: "update"
+    showSql: "true"
+  readinessProbeSql:
+    enabled: false
+  livenessProbeSql:
+    enabled: false
+  dependencies:
+    requestRegister:
+      name: "request-register"
+      url: "http://pp-request-register-service.push-payment:9090/"
+    parameters:
+      name: "parameters"
+      url: "http://pp-parameters-service.push-payment:9090/"
+  cors:
+    allowedAddresses: "https://pp-service.sgmaroc.root.net"
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+    - host: pp-interface-canaux-service.sgmaroc.root.net
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 80
+    periodSeconds: 45
+    timeoutSeconds: 8
+  livenessProbe:
+    initialDelaySeconds: 310
+    periodSeconds: 60
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 400m
+      memory: 512Mi
+    requests:
+      cpu: 400m
+      memory: 512Mi
+  enabled: true
+  replicaCount: 1
+  keycloak:
+    secret: "CSQhNyLfiljmSWxfqD06jpIqawPfglCE"
+    host: "http://ckey-keycloak.keycloak:80/auth"
+interface-jms-service:
+  image:
+    reposiroty: ''
+    tag: 0.2.71
+  protocole: "nirvana"
+  datasource:
+    image:
+      repository: "postgresql-repmgr"
+      tag: "11.15.0-debian-10-r14"
+    driverClassName: "org.postgresql.Driver"
+    initializationMode: "never"
+    platform: "POSTGRES"
+    jdbc: "postgresql"
+    rdbms:
+      host: "postgres-postgresql-ha-pgpool.postgresql.svc.cluster.local"
+      port: "5432"
+    db:
+      username: "postgres"
+      password: "c2dtYXJvY0AyMw=="
+  jpa:
+    database: "POSTGRESQL"
+    databasePlatform: "org.hibernate.dialect.PostgreSQL94Dialect"
+    generateDdl: "false"
+    hibernate:
+      ddlAuto: "update"
+    showSql: "true"
+  readinessProbeSql:
+    enabled: false
+  livenessProbeSql:
+    enabled: false
+  gsimt:
+    keycloak:
+      systemUser: "admin"
+      systemPassword: "YWRtaW4="
+      resource: "postman"
+      secret: "LCnZVuCBUwTSrmqeZkyhqtJuruJkvKIA"
+    api:
+      url: "http://pp-gsimt-mock.push-payment:9090/"
+    host: "nhps://172.16.11.50:5555/ums1,nhps://172.16.11.50:5555/ums2,nhps://172.16.11.50:5555/ums3"
+    port: "5555/ums1"
+
+    keyStorePath: "/opt/certs/KS022.jks"
+    keyStorePassword: "azerty"
+    trustorePath: "/opt/certs/TS.jks"
+    truststorePassword: "azerty"
+    user: "022"
+    password: "93Y5tHmxX4"
+
+    keyStorePathB2: "/opt/certs/KS363.jks"
+    keyStorePasswordB2: "azerty"
+    trustorePathB2: "/opt/certs/TS.jks"
+    truststorePasswordB2: "azerty"
+    userB2: "363"
+    passwordB2: "2xm6G0A9nS"
+    popEventList: true
+    topic:
+      in: "VI_022_IN"
+      out: "VI_022_OUT"
+      ack: "VI_022_ACK"
+      daa:
+        in: "VI_363_IN"
+        out: "VI_363_OUT"
+        ack: "VI_363_ACK"
+      param: "integration-s2mTopicParameter"
+  dependencies:
+    gsimt:
+        name: "gsimt-service"
+        url: "http://172.16.11.50:8443/"
+        serviceInvPath: "SCPI-GWS/scpi/status/bank"
+        servicePositionPath: "SCPI-GWS/scpi/position/bank"
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 81
+    periodSeconds: 50
+    timeoutSeconds: 7
+  livenessProbe:
+    initialDelaySeconds: 80 
+    periodSeconds: 67
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 400m
+      memory: 512Mi
+    requests:
+      cpu: 400m
+      memory: 512Mi
+  enabled: true
+  replicaCount: 1
+  keycloak:
+    host: "http://ckey-keycloak.keycloak:80/auth"
+    secret: "XDuqTV2Cfofq5ikGDpjlaGBRIOKPQ6Zm"
+notification-settings-service:
+  datasource:
+    image:
+      repository: "postgresql-repmgr"
+      tag: "11.15.0-debian-10-r14"
+    driverClassName: "org.postgresql.Driver"
+    initializationMode: "never"
+    platform: "POSTGRES"
+    jdbc: "postgresql"
+    rdbms:
+      host: "postgres-postgresql-ha-pgpool.postgresql.svc.cluster.local"
+      port: "5432"
+    db:
+      username: "postgres"
+      password: "c2dtYXJvY0AyMw=="
+  jpa:
+    database: "POSTGRESQL"
+    databasePlatform: "org.hibernate.dialect.PostgreSQL94Dialect"
+    generateDdl: "false"
+    hibernate:
+      ddlAuto: "update"
+    showSql: "true"
+  readinessProbeSql:
+    enabled: false
+  livenessProbeSql:
+    enabled: false
+  cors:
+    allowedAddresses: "https://pp-service.sgmaroc.root.net"
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 80
+    periodSeconds: 38
+    timeoutSeconds: 7
+  livenessProbe:
+    initialDelaySeconds: 290
+    periodSeconds: 67
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 300m
+      memory: 400Mi
+    requests:
+      cpu: 300m
+      memory: 400Mi
+  enabled: true
+  replicaCount: 1
+  keycloak:
+    secret: "4YIxwLYy05kVpfdl2CYUVtEHe63VLW7D"
+    host: "http://ckey-keycloak.keycloak:80/auth"
+  image:
+    reposiroty: ''
+    tag: 0.13.5
+orchestrator-service:
+  image:
+    reposiroty: ''
+    tag: 0.14.32
+  datasource:
+    image:
+      repository: "postgresql-repmgr"
+      tag: "11.15.0-debian-10-r14"
+    driverClassName: "org.postgresql.Driver"
+    initializationMode: "never"
+    platform: "POSTGRES"
+    jdbc: "postgresql"
+    rdbms:
+      host: "postgres-postgresql-ha-pgpool.postgresql.svc.cluster.local"
+      port: "5432"
+    db:
+      username: "postgres"
+      password: "c2dtYXJvY0AyMw=="
+  jpa:
+    database: "POSTGRESQL"
+    databasePlatform: "org.hibernate.dialect.PostgreSQL94Dialect"
+    generateDdl: "false"
+    hibernate:
+      ddlAuto: "update"
+    showSql: "true"
+  readinessProbeSql:
+    enabled: false
+  livenessProbeSql:
+    enabled: false
+  dependencies:
+    parameters:
+      url: "http://pp-parameters-service.push-payment:9090/"
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+    - host: pp-orchestrator-service.sgmaroc.root.net
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 80
+    periodSeconds: 35
+    timeoutSeconds: 7
+  livenessProbe:
+    initialDelaySeconds: 80
+    periodSeconds: 67
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 400m
+      memory: 1024Mi
+    requests:
+      cpu: 400m
+      memory: 1024Mi
+  enabled: true
+  replicaCount: 2
+  keycloak:
+    secret: "ilVekz98JwfpiCi76want2I2zSUgLgVx"
+    host: "http://ckey-keycloak.keycloak:80/auth"
+parameters-service:
+  image:
+    reposiroty: ''
+    tag: 0.14.37
+  datasource:
+    image:
+      repository: "postgresql-repmgr"
+      tag: "11.15.0-debian-10-r14"
+    driverClassName: "org.postgresql.Driver"
+    initializationMode: "never"
+    platform: "POSTGRES"
+    jdbc: "postgresql"
+    rdbms:
+      host: "postgres-postgresql-ha-pgpool.postgresql.svc.cluster.local"
+      port: "5432"
+    db:
+      username: "postgres"
+      password: "c2dtYXJvY0AyMw=="
+  jpa:
+    database: "POSTGRESQL"
+    databasePlatform: "org.hibernate.dialect.PostgreSQL94Dialect"
+    generateDdl: "false"
+    hibernate:
+      ddlAuto: "update"
+    showSql: "true"
+  readinessProbeSql:
+    enabled: false
+  livenessProbeSql:
+    enabled: false
+  cors:
+    allowedAddresses: "https://pp-service.sgmaroc.root.net"
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 80
+    periodSeconds: 38
+    timeoutSeconds: 7
+  livenessProbe:
+    initialDelaySeconds: 80
+    periodSeconds: 67
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 400m
+      memory: 512Mi
+    requests:
+      cpu: 400m
+      memory: 512Mi
+  enabled: true
+  replicaCount: 1
+  keycloak:
+    host: "http://ckey-keycloak.keycloak:80/auth"
+    secret: "TioKkcagOf5Zus0lCIAOplbr357xj6vj"
+reconciliation-service:
+  image:
+    reposiroty: ''
+    tag: 0.2.26
+  datasource:
+    image:
+      repository: "postgresql-repmgr"
+      tag: "11.15.0-debian-10-r14"
+    driverClassName: "org.postgresql.Driver"
+    initializationMode: "never"
+    platform: "POSTGRES"
+    jdbc: "postgresql"
+    rdbms:
+      host: "postgres-postgresql-ha-pgpool.postgresql.svc.cluster.local"
+      port: "5432"
+    db:
+      username: "postgres"
+      password: "c2dtYXJvY0AyMw=="
+  jpa:
+    database: "POSTGRESQL"
+    databasePlatform: "org.hibernate.dialect.PostgreSQL94Dialect"
+    generateDdl: "false"
+    hibernate:
+      ddlAuto: "update"
+    showSql: "true"
+  readinessProbeSql:
+    enabled: false
+  dependencies:
+    gsimtMock:
+      name: "gsimt-mock"
+      url: "http://pp-gsimt-mock.push-payment:9090/"
+    cbs:
+      name: "gsimt-mock"
+      url: "http://pp-gsimt-mock.push-payment:9090/"
+    gsimt:
+      name: "gsimt-mock-service"
+      url: "http://172.16.11.50:8443/"
+      serviceInvPath: "SCPI-GWS/scpi/status/bank"
+      servicePositionPath: "SCPI-GWS/scpi/position/bank"
+  livenessProbeSql:
+    enabled: false
+  cors:
+    allowedAddresses: "https://pp-service.sgmaroc.root.net"
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 63
+    periodSeconds: 48
+    timeoutSeconds: 7
+  livenessProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 63
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 300m
+      memory: 512Mi
+    requests:
+      cpu: 300m
+      memory: 512Mi
+  enabled: true
+  replicaCount: 1
+  keycloak:
+    host: "http://ckey-keycloak.keycloak:80/auth"
+    secret: "XDuqTV2Cfofq5ikGDpjlaGBRIOKPQ6Zm"
+request-register-service:
+  image:
+    reposiroty: ''
+    tag: 0.14.32
+  datasource:
+    image:
+      repository: "postgresql-repmgr"
+      tag: "11.15.0-debian-10-r14"
+    driverClassName: "org.postgresql.Driver"
+    initializationMode: "never"
+    platform: "POSTGRES"
+    jdbc: "postgresql"
+    rdbms:
+      host: "postgres-postgresql-ha-pgpool.postgresql.svc.cluster.local"
+      port: "5432"
+    db:
+      username: "postgres"
+      password: "c2dtYXJvY0AyMw=="
+  jpa:
+    database: "POSTGRESQL"
+    databasePlatform: "org.hibernate.dialect.PostgreSQL94Dialect"
+    generateDdl: "false"
+    hibernate:
+      ddlAuto: "update"
+    showSql: "true"
+  readinessProbeSql:
+    enabled: false
+  livenessProbeSql:
+    enabled: false
+  dependencies:
+    parametrageName: "parameters"
+    parametrageUrl: "http://pp-parameters-service.push-payment:9090/"
+    executionChainName: ""
+    executionChainUrl: "http://pp-execution-chain-service.push-payment:9090/"
+    notificationSettingsUrl: "http://pp-notification-settings-service.push-payment:9090/"
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 80
+    periodSeconds: 38
+    timeoutSeconds: 7
+  livenessProbe:
+    initialDelaySeconds: 80 
+    periodSeconds: 67
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 400m
+      memory: 850Mi
+    requests:
+      cpu: 400m
+      memory: 850Mi
+  enabled: true
+  replicaCount: 2
+  keycloak:
+    host: "http://ckey-keycloak.keycloak:80/auth"
+    secret: "IvjWbrnmYHJOIBoWTepkz3IK1lARPriA"
+fees-calculator-service:
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 283
+    periodSeconds: 38
+    timeoutSeconds: 7
+  livenessProbe:
+    initialDelaySeconds: 380
+    periodSeconds: 67
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 200m
+      memory: 384Mi
+    requests:
+      cpu: 200m
+      memory: 384Mi
+  enabled: false
+  replicaCount: 1
+  keycloak:
+    host: "http://ckey-keycloak.keycloak:80/auth"
+  image:
+    reposiroty: ''
+    tag: 0.14.2
+interface-rest-service:
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 63
+    periodSeconds: 38
+    timeoutSeconds: 7
+  livenessProbe:
+    initialDelaySeconds: 364
+    periodSeconds: 67
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 200m
+      memory: 384Mi
+    requests:
+      cpu: 200m
+      memory: 384Mi
+  enabled: false
+  replicaCount: 1
+  image:
+    reposiroty: ''
+    tag: 0.3.1
+dispute-management-service:
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 273
+    periodSeconds: 38
+    timeoutSeconds: 7
+  livenessProbe:
+    initialDelaySeconds: 370
+    periodSeconds: 67
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 200m
+      memory: 750Mi
+    requests:
+      cpu: 200m
+      memory: 750Mi
+  enabled: false
+  replicaCount: 1
+  image:
+    reposiroty: ''
+    tag: 0.12.0
+dispute-register-mock-service:
+  strategy:
+    type: Recreate
+  readinessProbe:
+    initialDelaySeconds: 263
+    periodSeconds: 38
+    timeoutSeconds: 7
+  livenessProbe:
+    initialDelaySeconds: 363
+    periodSeconds: 67
+    timeoutSeconds: 7
+  resources:
+    limits:
+      cpu: 200m
+      memory: 384Mi
+    requests:
+      cpu: 200m
+      memory: 384Mi
+  enabled: false
+  replicaCount: 1
+  image:
+    reposiroty: ''
+    tag: 0.12.0
+ingress:
+  enabled: true
+  host: pp-service.sgmaroc.root.net
+  tls: []

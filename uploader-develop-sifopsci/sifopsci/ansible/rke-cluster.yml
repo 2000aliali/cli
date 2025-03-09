@@ -1,0 +1,16 @@
+---
+ - name: Create the Rancher 2 Cluster Config for RKE
+   hosts: 127.0.0.1
+   connection: local
+   roles:
+     - s2m.rke_cluster
+
+#- name: Sizing for nodes that have two disks
+#  hosts: rancher-2-two-disks
+#  roles:
+#    - resizing
+
+#- name: Sizing for nodes that have three disks
+#  hosts: rancher-2-three-disks
+#  roles:
+#    - resizing-cns

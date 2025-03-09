@@ -1,0 +1,65 @@
+---
+- name: Rendering 020-RoleBinding-strimzi-cluster-operator.yaml
+  local_action:
+    module: template
+    src: 020-RoleBinding-strimzi-cluster-operator.yaml.j2
+    dest: /app/ansible/kafka/kafka/cluster-operator/020-RoleBinding-strimzi-cluster-operator.yaml
+    unsafe_writes: yes
+- name: Rendering 021-ClusterRoleBinding-strimzi-cluster-operator.yaml
+  local_action:
+    module: template
+    src: 021-ClusterRoleBinding-strimzi-cluster-operator.yaml.j2
+    dest: /app/ansible/kafka/kafka/cluster-operator/021-ClusterRoleBinding-strimzi-cluster-operator.yaml
+    unsafe_writes: yes
+- name: Rendering 022-RoleBinding-strimzi-cluster-operator.yaml
+  local_action:
+    module: template
+    src: 022-RoleBinding-strimzi-cluster-operator.yaml.j2
+    dest: /app/ansible/kafka/kafka/cluster-operator/022-RoleBinding-strimzi-cluster-operator.yaml
+    unsafe_writes: yes
+- name: Rendering 030-ClusterRoleBinding-strimzi-cluster-operator-kafka-broker-delegation.yaml
+  local_action:
+    module: template
+    src: 030-ClusterRoleBinding-strimzi-cluster-operator-kafka-broker-delegation.yaml.j2
+    dest: /app/ansible/kafka/kafka/cluster-operator/030-ClusterRoleBinding-strimzi-cluster-operator-kafka-broker-delegation.yaml
+    unsafe_writes: yes
+- name: Rendering 031-RoleBinding-strimzi-cluster-operator-entity-operator-delegation.yaml
+  local_action:
+    module: template
+    src: 031-RoleBinding-strimzi-cluster-operator-entity-operator-delegation.yaml.j2
+    dest: /app/ansible/kafka/kafka/cluster-operator/031-RoleBinding-strimzi-cluster-operator-entity-operator-delegation.yaml
+    unsafe_writes: yes
+- name: Rendering 033-ClusterRoleBinding-strimzi-cluster-operator-kafka-client-delegation.yaml
+  local_action:
+    module: template
+    src: 033-ClusterRoleBinding-strimzi-cluster-operator-kafka-client-delegation.yaml.j2
+    dest: /app/ansible/kafka/kafka/cluster-operator/033-ClusterRoleBinding-strimzi-cluster-operator-kafka-client-delegation.yaml
+    unsafe_writes: yes
+
+- name: Rendering the kafka operator Manifest
+  local_action:
+    module: template
+    src: 060-Deployment-strimzi-cluster-operator.yaml.j2
+    dest: /app/ansible/kafka/kafka/cluster-operator/060-Deployment-strimzi-cluster-operator.yaml
+    unsafe_writes: yes
+
+- name: Rendering the kafka persistent Manifest
+  local_action:
+    module: template
+    src: kafka-cluster.yml.j2
+    dest: /app/ansible/kafka/kafka/kafka-cluster.yml
+    unsafe_writes: yes
+
+- name: Rendering the kafka schema registry Manifest
+  local_action:
+    module: template
+    src: schema-registry.yml.j2
+    dest: /app/ansible/kafka/schema-registry/schema-registry.yml
+    unsafe_writes: yes
+
+- name: Rendering the kafka akhq values Manifest
+  local_action:
+    module: template
+    src: values.yml.j2
+    dest: /app/ansible/kafka/akhq/values.yml
+    unsafe_writes: yes

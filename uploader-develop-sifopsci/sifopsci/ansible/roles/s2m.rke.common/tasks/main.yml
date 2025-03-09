@@ -1,0 +1,245 @@
+---
+# tasks file for omnishorerke.common
+
+- name: Update Policies
+  shell: update-crypto-policies --set LEGACY
+  ignore_errors: yes 
+
+- name: runc
+  dnf:
+    name: runc
+    state: absent
+
+- name: buildah
+  dnf:
+    name: buildah
+    state: absent
+
+- name: podman
+  dnf:
+    name: podman
+    state: absent
+
+- name: nfs dependencies
+  dnf:
+    name: ['nfs-utils']
+    state: present
+
+- name: iptables services
+  dnf:
+    name: ['iptables-services']
+    state: present
+
+- name: tar service
+  dnf:
+    name: ['tar']
+    state: present
+
+- name: enable iptables
+  systemd:
+    name: iptables
+    enabled: yes
+   
+- name: start iptables
+  systemd:
+    name: iptables
+    state: started
+
+- name: open-iscsi
+  dnf:
+    name: iscsi-initiator-utils
+    state: present
+
+- name: open-iscsi
+  systemd:
+    name: iscsi
+    enabled: yes
+    
+- name: open-iscsi
+  systemd:
+    name: iscsi
+    state: started
+
+- name: Blacklist ip tables legacy
+  kernel_blacklist:
+    name: ip_tables
+    state: present
+
+- name: Adding harbor to /etc/hosts
+  lineinfile:
+    dest: "/etc/hosts"
+    line: "{{ item.line }}"
+    state: present
+  with_items:
+     - line: "{{ harbor_ip }} {{ harbor_endpoint }}"
+
+- name: copy Harbor CA
+  copy:
+    src: "{{ platform_files_directory }}/ca-harbor.crt"
+    dest: /etc/pki/ca-trust/source/anchors/mycrt.pem
+    mode: 0600
+  when: harbor_ssl
+
+- name: update ca trust
+  shell: "update-ca-trust"
+  when: harbor_ssl
+
+- name: elasticsearch prerequisite
+  command: sysctl -w vm.max_map_count=262144
+
+- name: elasticsearch prerequisite
+  command: sysctl -w fs.file-max=65536
+
+- name: Check if Docker is installed
+  command: systemctl status docker
+  register: docker_check
+  ignore_errors: yes
+
+- name: Copy the Docker package
+  copy:
+    src: docker-20.10.10.tar
+    dest: /tmp/docker-20.10.10.tar
+    mode: 0700
+  when: docker_check.stderr.find('service could not be found') != -1
+
+- name: Extract the docker archive into remote hosts
+  unarchive:
+    src: /tmp/docker-20.10.10.tar
+    dest: /tmp/
+    remote_src: yes
+  when: docker_check.stderr.find('service could not be found') != -1
+
+- name: Install Docker
+  copy:
+    src: /tmp/docker/
+    dest: /usr/bin/
+    remote_src: yes
+  when: docker_check.stderr.find('service could not be found') != -1
+
+
+- name: Copy Docker Units files to /etc/systemd/system
+  template:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: 0744
+  with_items:
+    - docker.service
+    - docker.socket
+    - containerd.service
+
+- name: Changing the permissions
+  file:
+     path: "{{ item }}"
+     owner: "{{ ansible_user }}"
+     mode: 0777
+  with_items:
+    - /usr/bin/dockerd
+    - /usr/bin/docker-init
+    - /usr/bin/runc
+    - /usr/bin/ctr
+    - /usr/bin/containerd-shim-runc-v2
+    - /usr/bin/containerd-shim
+    - /usr/bin/docker
+    - /usr/bin/containerd
+    - /usr/bin/docker-proxy
+
+
+- name: Reload the service files
+  command: systemctl daemon-reload
+
+- name: Create docker group
+  group:
+    name: docker
+    state: present
+  
+- name: Enable the Docker daemon in systemd
+  systemd:
+    name: docker
+    enabled: yes
+    masked: no
+
+- name: Start the Docker daemon
+  systemd:
+    name: docker
+    state: started
+    masked: no
+
+- name: Remove the Docker installer file.
+  file:
+    state: absent
+    path: /tmp/docker-20.10.10.tar
+  when: docker_check.stderr.find('service could not be found') != -1
+
+- name: Add RKE admin user
+  user:
+    name: "{{ ansible_user }}"
+    shell: /bin/bash
+    groups: docker
+    append: 'yes'
+     
+- name: Create sudo file
+  file:
+    path: /etc/sudoers.d/{{ ansible_user }}
+    state: touch
+    
+- name: Give devops user passwordless sudo
+  lineinfile:
+    path: /etc/sudoers.d/{{ ansible_user }}
+    state: present
+    line: '{{ ansible_user }} ALL=(ALL:ALL) NOPASSWD: ALL'
+     
+- name: Set authorized key taken from file
+  authorized_key:
+    user: "{{ ansible_user }}"
+    state: present
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+- name: Load kernel modules for RKE
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ kernel_modules }}"
+  ignore_errors: yes
+
+- name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
+  shell: |
+    swapoff -a
+
+- name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+.*)$'
+    replace: '# \1'
+
+- name: Modify sysctl entries
+  sysctl:
+    name: '{{ item.key }}'
+    value: '{{ item.value }}'
+    sysctl_set: yes
+    ignoreerrors: yes
+    state: present
+    reload: yes
+  with_items:
+    - {key: net.bridge.bridge-nf-call-ip6tables, value: 1}
+    - {key: net.bridge.bridge-nf-call-iptables,  value: 1}
+    - {key: net.bridge.bridge-nf-call-arptables,  value: 1}
+    - {key: net.ipv4.ip_forward,  value: 1}
+  
+
+- name: Hardening sshd
+  lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: "{{ item.regexp | default(omit) }}"
+    line: "{{ item.line }}"
+    state: "{{ item.state | default('present') }}"
+    validate: "sshd -t -f %s"
+  with_items:
+    - regexp: "^AllowTcpForwarding\ "
+      line: "AllowTcpForwarding yes"
+
+- name: Reload sshd
+  service:
+    name: sshd
+    state: restarted

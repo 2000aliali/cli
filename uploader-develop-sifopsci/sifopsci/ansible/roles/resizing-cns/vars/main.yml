@@ -1,0 +1,22 @@
+---
+# vars file for resizing
+lvm_config:
+    pvs:
+      - /dev/sdb
+    vgs:
+        vg_root:
+            pvs:
+                - /dev/sda2
+                - /dev/sdb
+    lvs:
+        - name: var
+          vg: vg_root
+          size: "+100%FREE"
+
+
+
+filesystems_config:
+    var:
+        dev: /dev/vg_root/var
+        type: xfs
+        opts: ''

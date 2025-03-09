@@ -1,0 +1,108 @@
+installation_mode: online
+rke_version: "1.24.8"
+platform_version: "1.1.10"
+platform_name: "SGABS"
+platform_fqdn: "minikube.local"
+
+system:
+  authMethod: "password"
+  username: s2mtest
+  password: "alidata2024@"
+  ssh_private_key: "/root/.ssh/id_rsa"
+
+minio:
+  enabled: true
+  ip: "10.0.2.15"
+  accessId: minio_admin
+  accessKey: ezaezaeezaea=
+  host: minio.local
+  data_path: "/minio"
+  ssl:
+    enabled: false
+
+harbor:
+  ip: "127.0.0.1"
+  external_url: harbor.local
+  data_path: "/data"
+  admin_password: "factory123@23"
+  ssl:
+    enabled: false
+
+rancher:
+  version: 2.7.0
+  host: rancher.local
+  rancher_count: 1
+  ips: ["127.0.0.1"]
+
+rancher-rke:
+  s3Backups:
+    enabled: false
+    interval_hours: 12
+    retention: 6
+    bucket_name: rke-etcd
+  control_plane_ips: ["127.0.0.1"]
+  worker_ips: ["127.0.0.1"]
+  worker_cns: ["127.0.0.1"]
+
+cns:
+  data_path: "/var/lib/longhorn/"
+  default_replica_count: 1
+
+middleware:
+  keycloak:
+    enabled: false
+    ha: true
+    admin_password: "your_secure_password"
+    host: keycloak.local
+    storage_class: "longhorn"
+    storage_size: "10Gi"
+  kafka:
+    enabled: false
+    replication_factor: 1
+    topic_replication_factor: 1
+    brokerXms: 2800m
+    brokerXmx: 2800m
+    brokerMemory: 2100Mi
+    brokerPvSize: 30Gi
+    zookeeperXms: 2500m
+    zookeeperXmx: 2500m
+    zookeeperMemory: 2000Mi
+    zookeeperPvSize: 10Gi
+    broker_count: 1
+    zookeeper_count: 1
+    akhqHost: "akhq.local"
+  postgresql:
+    enabled: true
+    count: 3
+    storage_size: 10Gi
+    password: "your_secure_password"
+  elk:
+    enabled: false
+  vault:
+    enabled: false
+    host: vault.local
+    storage_class: "longhorn"
+  rancher-monitoring:
+    enabled: false
+    prometheus:
+      enabled: false
+      scrape_interval: 1m
+      evaluation_interval: 1m
+      retention: 10d
+      retention_size: 50Gi
+      ressources_limtes:
+        requested_CPU: 750m
+        requested_memory: 750Mi
+        CPU_limit: 1000m
+        Memory_limit: 3000Mi
+    alerting:
+      enabled: false
+      alertmanager-secret: ""
+    grafana:
+      enabled: false
+
+profiles:
+  itsp:
+    enabled: true
+    version: '1.3.23'
+    topicsuffix: "pp-toto"

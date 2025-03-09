@@ -1,0 +1,185 @@
+# imagePullSecrets:
+#  - name: my-repository-secret
+image:
+  repository: {{ registry_akhq }}/akhq
+  tag: "" # uses Chart.AppVersion by default
+
+# custom annotations (example: for prometheus)
+annotations: {}
+  #prometheus.io/scrape: 'true'
+  #prometheus.io/port: '8080'
+  #prometheus.io/path: '/prometheus'
+
+podAnnotations: {}
+
+# custom labels
+labels: {}
+  # custom.label: 'true'
+
+podLabels: {}
+
+## You can put directly your configuration here... or add java opts or any other env vars
+#extraEnv: 
+# - name: AKHQ_CONFIGURATION
+#   value: |
+#       akhq:
+#         secrets:
+#           docker-kafka-server:
+#             properties:
+#               bootstrap.servers: "kafka-cluster-kafka-bootstrap:9092"
+#             schema-registry:
+#               url: "http://schema-registry-client:8081"
+# - name: JAVA_OPTS
+#   value: "-Djavax.net.ssl.trustStore=/usr/local/openjdk-11/lib/security/cacerts -Djavax.net.ssl.trustStorePassword=password"
+# - name: CLASSPATH
+#   value: "/any/additional/jars/desired.jar:/go/here.jar"
+
+#micronaut:
+#  security:
+#    enabled: true
+
+#akhq.security:
+#  basic-auth:
+#    - username: admin
+#      password: "097BFF2DFF2DDCA3C78AF97C4FA2602BD855EEA1AB4C7892E828C7BEA38A9F3B"
+#      password: "$2a$<hashed password>"
+#      passwordHash: BCRYPT
+#      groups:
+#      - admin
+#    - username: reader
+#      password: "9A67C49AD95C12370A1AA45404F4B7A413E24847119D0AD12A02CC5B7C8B00C1"
+#      groups:
+#      - reader
+## Or you can also use configmap for the configuration...
+configuration:
+  akhq:
+    server:
+      access-log:
+        enabled: true
+        name: org.akhq.log.access    
+
+##... and secret for connection information
+existingSecrets: ""
+# name of the existingSecret
+secrets: 
+  akhq:
+    connections:
+      kafka-cluster:
+        properties:
+          bootstrap.servers: "kafka-cluster-kafka-bootstrap:9092"
+        schema-registry:
+          url: "http://schema-registry-client:8081"
+#          type: "confluent"
+#          basic-auth-username: basic-auth-user
+#          basic-auth-password: basic-auth-pass
+#        connect:
+#          - name: "my-connect"
+#            url: "http://connect:8083"
+#            basic-auth-username: basic-auth-user
+#            basic-auth-password: basic-auth-pass
+    security:
+      default-group: no-roles #reader
+      basic-auth:
+      - username: admin
+        password: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"       
+#      password: "$2a$<hashed password>"
+#      passwordHash: BCRYPT
+        groups:
+        - admin
+      - username: reader
+        password: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
+        groups:
+        - reader
+  micronaut:
+    security:
+      enabled: true
+      token:
+        jwt:
+          signatures:
+            secret:
+              generator:
+                secret: sugiZqtdvGzU7a3EYiSMzf7Zy2UlP32z
+
+kafkaSecrets: []
+#Provide extra base64 encoded kubernetes secrets (keystore/truststore)
+
+# Any extra volumes to define for the pod (like keystore/truststore)
+extraVolumes: []
+
+# Any extra volume mounts to define for the akhq container
+extraVolumeMounts: []
+
+# Specify ServiceAccount for pod
+serviceAccountName: null
+serviceAccount:
+  create: false
+  #annotations:
+  #  eks.amazonaws.com/role-arn: arn:aws:iam::123456789000:role/iam-role-name-here
+
+# Add your own init container or uncomment and modify the example.
+initContainers: {}
+#   create-keystore:
+#     image: "openjdk:11-slim"
+#     command: ['sh', '-c', 'keytool']
+#     volumeMounts:
+#      - mountPath: /tmp
+#        name: certs
+
+# Configure the Pod Security Context
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext: {}
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Configure the Container Security Context
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+containerSecurityContext: {}
+  # allowPrivilegeEscalation: false
+  # privileged: false
+  # capabilities:
+  #   drop:
+  #     - ALL
+  # runAsNonRoot: true
+  # runAsUser: 1001
+  # readOnlyRootFilesystem: true
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
+  #httpNodePort: 32551
+  labels: {}
+  annotations:
+    # cloud.google.com/load-balancer-type: "Internal"
+
+ingress:
+  enabled: true
+  ingressClassName: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  paths:
+    - /
+  hosts:
+    - {{ akhq_host }}
+  tls: []
+  #  - secretName: akhq-tls
+  #    hosts:
+  #      - akhq.demo.com
+
+readinessProbe:
+  prefix: "" # set same as `micronaut.server.context-path`
+
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

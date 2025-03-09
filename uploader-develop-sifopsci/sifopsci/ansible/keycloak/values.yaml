@@ -1,0 +1,157 @@
+# Default values for itsp-keycloak.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+#
+global:
+  registry: ""
+  registry1: ""
+  registry3: "container-registry.dev.s2m.ma/infrastructure"
+  imagePullSecrets:
+  - name: container-registry-user
+
+kafka:
+  bootstrapServers: ""
+  schemaRegistryEp: ""
+  producerAcks: ""
+
+initContainers:
+  resources:
+    limits:
+      cpu: 800m
+      memory: 512Mi
+    requests:
+      cpu: 20m
+      memory: 512Mi
+
+mysql:
+  image:
+    repository: "mysql" 
+    pullPolicy: IfNotPresent
+    tag: "0.0.2"
+  resources:
+    limits:
+      cpu: 800m
+      memory: 1Gi
+    requests:
+      cpu: 20m
+      memory: 512Mi
+  storageClassName: "gp2-proposed"
+  storageSize: "5Gi"
+  readinessProbe:
+    enabled: true
+    httpGet:
+      path: "/auth/realms/master"
+      port: 8080
+  livenessProbe:
+    enabled: true
+    httpGet:
+      path: "/auth/realms/master"
+      port: 8080
+
+keycloak:
+  logLevel: "DEBUG"
+  proxyAddressForwarding: "true"
+  user: "admin"
+  password: "c3VwZXJTZWNyZXQ="
+  frontendUrl: ""
+
+topic:
+  adminEvent: "nxp-audit-trail-integration-admin-event-topic-n-004"
+  userEvent: "nxp-audit-trail-integration-user-event-topic-n-004"
+  brutForce: "nxp-audit-trail-integration-brute-force-topic-n-004"
+
+
+db:
+  vendor: "mysql"
+  port: "3306"
+  params: "useSSL=false"
+  user: "root"
+  database: "keycloak"
+  password: "cGFzc3dvcmQ="
+
+
+replicaCount: 2
+
+image:
+  repository: keycloak
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "0.0.4"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: true
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: ckey.app.dev.s2m.ma
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  limits:
+    cpu: 800m
+    memory: 1Gi
+  requests:
+    cpu: 20m
+    memory: 512Mi
+
+strategy: {}
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: "/auth/realms/master"
+    port: 8080
+  initialDelaySeconds: 120
+  periodSeconds: 30
+  timeoutSeconds: 1
+  failureThreshold: 3
+  successThreshold: 1
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: "/auth/realms/master"
+    port: 8080
+  initialDelaySeconds: 140
+  periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 3
+  successThreshold: 1

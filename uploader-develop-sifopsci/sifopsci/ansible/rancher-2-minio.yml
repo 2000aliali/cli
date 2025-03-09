@@ -1,0 +1,7 @@
+---
+- name: Rancher 2 Kubernetes Nodes - Minio
+  hosts: rancher-2-minio
+  become: yes
+  roles:
+    - role: s2m.minio
+      when: not skip_minio

@@ -1,0 +1,137 @@
+---
+# tasks file for omnishorerke.common
+
+- name: Update Policies
+  shell: update-crypto-policies --set LEGACY
+
+- name: runc
+  dnf:
+    name: runc
+    state: absent
+
+- name: buildah
+  dnf:
+    name: buildah
+    state: absent
+
+- name: podman
+  dnf:
+    name: podman
+    state: absent
+
+
+- name: nfs dependencies
+  dnf:
+    name: ['iptables-services']
+    state: present
+
+- name: enable iptables
+  systemd:
+    name: iptables
+    enabled: yes
+   
+- name: start iptables
+  systemd:
+    name: iptables
+    state: started
+
+- name: Blacklist ip tables legacy
+  kernel_blacklist:
+    name: ip_tables
+    state: present
+
+
+- name: Check if Docker is installed
+  command: systemctl status docker
+  register: docker_check
+  ignore_errors: yes
+
+- name: Copy the Docker package
+  copy:
+    src: docker-20.10.10.tar
+    dest: /tmp/docker-20.10.10.tar
+    mode: 0700
+  when: docker_check.stderr.find('service could not be found') != -1
+
+- name: Extract the docker archive into remote hosts
+  unarchive:
+    src: /tmp/docker-20.10.10.tar
+    dest: /tmp/
+    remote_src: yes
+  when: docker_check.stderr.find('service could not be found') != -1
+
+- name: Install Docker
+  copy:
+    src: /tmp/docker/
+    dest: /usr/bin/
+    remote_src: yes
+  when: docker_check.stderr.find('service could not be found') != -1
+
+
+- name: Copy Docker Units files to /etc/systemd/system
+  template:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: 0744
+  with_items:
+    - docker.service
+    - docker.socket
+    - containerd.service
+  when: docker_check.stderr.find('service could not be found') != -1
+
+- name: Changing the permissions
+  file:
+     path: "{{ item }}"
+     owner: "{{ ansible_user }}"
+     mode: 0777
+  with_items:
+    - /usr/bin/dockerd
+    - /usr/bin/docker-init
+    - /usr/bin/runc
+    - /usr/bin/ctr
+    - /usr/bin/containerd-shim-runc-v2
+    - /usr/bin/containerd-shim
+    - /usr/bin/docker
+    - /usr/bin/containerd
+    - /usr/bin/docker-proxy
+
+
+- name: Reload the service files
+  command: systemctl daemon-reload
+  when: docker_check.stderr.find('service could not be found') != -1
+
+- name: Create docker group
+  group:
+    name: docker
+    state: present
+  
+- name: Enable the Docker daemon in systemd
+  systemd:
+    name: docker
+    enabled: yes
+    masked: no
+
+- name: Start the Docker daemon
+  systemd:
+    name: docker
+    state: started
+    masked: no
+
+- name: Remove the Docker installer file.
+  file:
+    state: absent
+    path: /tmp/docker-20.10.10.tar
+  when: docker_check.stderr.find('service could not be found') != -1
+
+
+- name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
+  shell: |
+    swapoff -a
+
+- name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+.*)$'
+    replace: '# \1'

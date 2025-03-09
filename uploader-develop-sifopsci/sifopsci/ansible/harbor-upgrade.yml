@@ -1,0 +1,6 @@
+---
+- name: Harbor Upgrade
+  hosts: rancher-2-harbor
+  become: yes
+  roles:
+    - s2m.harbor-upgrade

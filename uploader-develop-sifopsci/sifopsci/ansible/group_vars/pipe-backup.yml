@@ -1,0 +1,298 @@
+pipeline {
+
+ agent any
+
+ tools {
+  maven 'maven3'
+  jdk 'jdk8'
+ }
+ 
+ 
+ environment {
+  GIT_REPO_CREDENTIAL_ID = "ciuser-gitlab-creadentials"
+  GIT_REPO_URI = "https://vcs.dev.s2m.ma/push_payment/central-api.git"
+  // #################################################
+  // Need to install pipeline-utility-steps plugin
+  DOCKER_FILE_PATH = "./ship/containerization/Dockerfile"
+  ARRTIFACT_PATH = "./target"
+  POM_GROUP_ID = readMavenPom().getGroupId()
+  POM_VERSION = readMavenPom().getVersion()
+  POM_ARTIFACT_ID = readMavenPom() getArtifactId()
+  BUILD_RELEASE_VERSION = readMavenPom().getVersion().replace("-SNAPSHOT", "")
+  GIT_TAG_COMMIT = sh(script: 'git describe --tags --always', returnStdout: true).trim()
+  IS_SNAPSHOT = readMavenPom().getVersion().endsWith("-SNAPSHOT")
+  JAR_FILE = "${env.ARRTIFACT_PATH}/${env.POM_ARTIFACT_ID}-${env.POM_VERSION}.jar"
+  // #################################################
+  DOCKER_BUILD_PATH = "."
+  REGISTRY_ADDRESS = "container-registry.dev.s2m.ma/push-payment"
+  REGISTRY_CREDENTIALS_ID = "container-registry-user"
+  // yes | no
+  USE_DOCKER_IMAGE_TAG_SHA256 = "no"
+  DOCKER_IMAGE_NAME = "${env.POM_ARTIFACT_ID}"
+  //DOCKER_IMAGE_TAG = "${env.BUILD_RELEASE_VERSION}-${env.BUILD_NUMBER}"
+  DOCKER_IMAGE_TAG_VERSION = "${env.BUILD_RELEASE_VERSION}"
+  DOCKER_IMAGE_NAME_TAG_VERSION = "${env.DOCKER_IMAGE_NAME}:${env.DOCKER_IMAGE_TAG_VERSION}"
+  DOCKER_IMAGE_NAME_TAG_LATEST = "${env.DOCKER_IMAGE_NAME}:latest"
+  DOCKER_IMAGE_URI_VERSION = "${env.REGISTRY_ADDRESS}/${env.DOCKER_IMAGE_NAME_TAG_VERSION}"
+  DOCKER_IMAGE_URI_LATEST = "${env.REGISTRY_ADDRESS}/${env.DOCKER_IMAGE_NAME_TAG_LATEST}"
+  REGISTRY_URI = "https://${env.REGISTRY_ADDRESS}"
+  // Generate REGISTRY_CREDENTIALS_USR and REGISTRY_CREDENTIALS_PSW
+  REGISTRY_CREDENTIALS = credentials("${env.REGISTRY_CREDENTIALS_ID}")
+  // #################################################
+  K8S_TOKEN_ID = "K8S_TOKEN_ID"
+  K8S_URI = "https://442EFD99300DFC0F8C3FD709B10CD40F.gr7.us-east-2.eks.amazonaws.com"
+  K8S_CONTEXT_NAME = "kubernetes-context"
+  K8S_CLUSTER_NAME = "kubernetes"
+  K8S_NAMESPACE = "push-payment-integration"
+  K8S_MANIFESTS_PATH = "./ship/k8s"
+  K8S_DEPLOYMENT_NAME = "${env.POM_ARTIFACT_ID}"
+  K8S_DEPLOYMENT_TIER = "${env.POM_ARTIFACT_ID}"
+  K8S_DEPLOYMENT_FRAMEWORK = "spring-boot"
+  K8S_DEPLOYMENT_REPLICAS = 1
+  K8S_DEPLOYMENT_REVISION_HISTORY_LIMIT = 3
+  K8S_DEPLOYMENT_PORT = 9090
+  K8S_DEPLOYMENT_CONTEXT_PATH = "/"
+  K8S_DOCKER_IMAGE_SECRET_NAME = "interface-iso-image-puller"
+  K8S_DEPLOYMENT_MEM_REQ = "384Mi"
+  K8S_DEPLOYMENT_MEM_LIMIT = "512Mi"
+  K8S_DEPLOYMENT_CPU_REQ = "100m"
+  K8S_DEPLOYMENT_CPU_LIMIT = "850m"
+  K8S_DEPLOYMENT_JAVA_XMX = "128M"
+  K8S_DEPLOYMENT_JAVA_XMS = "128M"
+  K8S_DEPLOYMENT_JAVA_OPTS = "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -Xms${env.K8S_DEPLOYMENT_JAVA_XMS} -Xmx${env.K8S_DEPLOYMENT_JAVA_XMX}"
+  K8S_DEPLOYMENT_SPRINTBOOT_PORT = "--server.port=${env.K8S_DEPLOYMENT_PORT} --server.servlet.context-path=${env.K8S_DEPLOYMENT_CONTEXT_PATH}"
+  K8S_APP_URI = "pp-interface-iso-service-push-payment-integration.app.dev.s2m.ma"
+  PUSH_PAYMENT_MYSQL_HOST = "mysql"
+  PUSH_PAYMENT_MYSQL_DB = "centralapi_db"
+  MYSQL_ROOT_CREDENTIALS = credentials("push-payment-mysql-database-ids")
+  PUSH_PAYMENT_MYSQL_USER = "${env.MYSQL_ROOT_CREDENTIALS_USR}"
+  PUSH_PAYMENT_MYSQL_PASSWORD = "${env.MYSQL_ROOT_CREDENTIALS_PSW}"
+  NEXUS_CREDS = credentials('NEXUS_CREDS')
+  NEXUS_USR = "${NEXUS_CREDS_USR}"
+  NEXUS_PWD = "${NEXUS_CREDS_PSW}"
+  CORS_ENABLED = "true"
+  CORS_ALLOWED_ADDRESSES= "https://ui-push-payment-integration.app.dev.s2m.ma"
+  PUSH_PAYMENT_KEYCLOAK_HOST="http://keycloak.transvers-integration:8080/auth"
+  TOPIC_SUFIXE="integration"
+  PUSH_PAYMENT_KEYCLOAK_REALM = "PUSH_PAYMENT"
+  PUSH_PAYMENT_KEYCLOAK_RESOURCE = "central-api"
+  PUSH_PAYMENT_KEYCLOAK_CREDENTIALS_SECRET = "a6982c67-f85c-4d17-acf1-518e7482e620"
+  PUSH_PAYMENT_KEYCLOAK_PRICIPAL_ATTRIBUTE = "preferred_username"
+  PUSH_PAYMENT_KEYCLOAK_BEARER_ONLY = "true"
+  KEYCLOAK_ADDON_ENABLE = "true"
+  KEYCLOAK_UNPROTECTED_PATHS = "/public/**, /actuator/**,/api/paymentRequest/*/status,/api/paymentRequest/status/**"
+  SERVER_PORT="9003"
+  JPA_SHOW_SQL="true"
+  PROFIL="prod"
+  BOOTSTRAP_SERVERS_URL="a885f377d36d142579ed20291e03f761-6d76f39896621ce6.elb.us-east-2.amazonaws.com"
+  BOOTSTRAP_SERVERS_PORT="9094"
+  KAFKA_REQUEST_TIMEOUT_MS="5000"
+  KAFKA_RETRY_BACKOFF_MS="500"
+  SHEMA_REGISTRY_ENDPOINT="ac97165a8a33c41dca0acabfc5898879-1191876181.us-east-2.elb.amazonaws.com"
+  SHEMA_REGISTRY_PORT="8081"
+  Kafka_USER_INFO="#{null}"
+  PRODUCER_ACKS="1"
+  CONSUMER_GROUP_ID="interface-iso-group"
+  TRUSTSTORE_PATH="#{null}"
+  TRUSTSTORE_PASSWORD="#{null}"
+  KEYSTORE_PATH="#{null}"
+  KEYSTORE_PASSWORD="#{null}"
+  KAFKA_REQUESTREPLY_TIMEOUT_MS="5000"
+  KAFKA_TOPIC_PARTITION="#{null}"
+  KAFKA_TOPIC_PARTITION_NUM="1"
+  KAFKA_TOPIC_DOEXECUTIONCHAIN_CREDIT_REQUEST_REPLICATION_FACTOR="1"
+  DOEXECUTIONCHAIN_CREDIT_REQUEST_TOPIC_NO="no-pp-000003"
+  KAFKA_TOPIC_DOEXECUTIONCHAIN_CREDIT_CONFIRMATION_REPLICATION_FACTOR="1"
+  DOEXECUTIONCHAIN_CREDIT_CONFIRMATION_TOPIC_NO="no-pp-000003"
+  KAFKA_TOPIC_ORCHESTRATOR_REQUEST_STATUS_REPLICATION_FACTOR="1"
+  ORCHESTRATOR_REQUEST_STATUS_TOPIC_NO="no-pp-000006"
+  KAFKA_TOPIC_ORCHESTRATOR_RETURN_REQUEST_REPLICATION_FACTOR="1"
+  ORCHESTRATOR_RETURN_REQUEST_TOPIC_NO="no-pp-000006"
+  KAFKA_TOPIC_DOINTERFACEISO_GENERATE_DEBIT_REQUEST_REPLICATION_FACTOR="1"
+  DOINTERFACEISO_GENERATE_DEBIT_REQUEST_TOPIC_NO="no-pp-000004"
+  DOINTERFACECANAUX_UPDATE_MESSAGE_DEBIT_REQUEST_TOPIC_NO="no-pp-000007"
+  KAFKA_TOPIC_DOINTERFACEISO_SEND_DEBIT_REQUEST_REPLICATION_FACTOR="1"
+  DOINTERFACEISO_SEND_DEBIT_REQUEST_TOPIC_NO="no-pp-0008"
+  KAFKA_TOPIC_JMS_MESSAGE_CREDIT_REPLICATION_FACTOR="1"
+  JMS_MESSAGE_CREDIT_TOPIC_NO="no-pp-000006"
+  KAFKA_TOPIC_JMS_MESSAGE_CREDIT_CONFIRMATION_REPLICATION_FACTOR="1"
+  JMS_MESSAGE_CREDIT_CONFIRMATION_TOPIC_NO="no-pp-000002"
+  KAFKA_TOPIC_MESSAGE_CANCELLATION_PACS002_REPLICATION_FACTOR="1"
+  MESSAGE_CANCELLATION_PACS002_TOPIC_NO="no-pp-000004"
+  KAFKA_TOPIC_UPDATE_STATUS_AND_CANCELLATION_STATUS_REPLICATION_FACTOR="1"
+  UPDATE_STATUS_AND_CANCELLATION_STATUS_TOPIC_NO="no-pp-000004"
+  KAFKA_TOPIC_GEN_CANCELLATION_REPLICATION_FACTOR="1"
+  GEN_CANCELLATION_TOPIC_NO="no-pp-02"
+  KAFKA_TOPIC_GEN_CANCELLATION_RESPONSE_REPLICATION_FACTOR="1"
+  GEN_CANCELLATION_RESPONSE_TOPIC_NO="no-pp-05"
+  KAFKA_TOPIC_REPLICATION_FACTOR="1"
+  SEND_CAMT056_TOPIC_NO="no-pp-01"
+  RECEPTION_CAMT056_TOPIC_NO="no-pp-01"
+  RECEPTION_PACS002_TOPIC_NO="no-pp-023"
+  RECEPTION_CAMT029_TOPIC_NO="no-pp-01"
+  SEND_PACS028_TOPIC_NO="no-pp-01"
+  RECEPTION_PACS028_TOPIC_NO="no-pp-01"
+  SEND_PACS008_TOPIC_NO="no-pp-01"
+  RECEPTION_PACS004_TOPIC_NO="no-pp-01"
+  SEND_CAMT029_TOPIC_NO="no-pp-01"
+  SEND_PACS004_TOPIC_NO="no-pp-01"
+  SEND_PACS002_TOPIC_NO="no-pp-01"
+  NOTIFY_ORCHESTRATOR_SEND_PACS002_ACSC_ACCC_TOPIC_NO="no-pp-02"
+  KAFKA_TOPIC_GET_REQUEST_DETAILS_REPLICATION_FACTOR="1"
+  GET_REQUEST_DETAILS_TOPIC_NO="no-pp-0003"
+  /* 
+  SWAGGER_ENABLED="true"
+  SWAGGER_BASEPACKAGE="ma.s2m.nxp.interfaceiso.controller"
+  SWAGGER_CLIENTID="swagger-ui"
+  SWAGGER_CLIENTSECRET="91d8bac9-fb6e-4f6c-a2ea-171fe6429d7b"
+  SWAGGER_TITLE="Central API Management Rest APIs"
+  SWAGGER_DESCRIPTION="This page lists all the rest APIs for Central API"
+  SWAGGER_VERSION="1.0.0"
+  SWAGGER_CONTACT_NAME="S2M SIF"
+  SWAGGER_CONTACT_URL="https://s2mworldwide.com/"
+  SWAGGER_CONTACT_EMAIL="contact@s2m.ma"
+  */
+ }
+ stages {
+
+  stage('Clean and Build') {
+    steps {
+    configFileProvider(
+            [configFile(fileId: 'setting-maven-file', variable: 'MAVEN_SETTINGS')]) {
+              script {
+                try {
+                  sh 'echo compile'
+                  sh 'mvn  -s $MAVEN_SETTINGS  --batch-mode clean compile'
+                } catch (err) {
+                  addGitLabMRComment(comment: "Jenkins CI issue: Error when compiling, please check the job build console: : ${env.BUILD_URL}console")
+                  addGitLabMRComment(comment: err.getMessage())
+                  throw err
+                }
+              }
+            }
+    }
+  }
+
+  stage('Jar Packaging') {
+   steps {
+    configFileProvider(
+            [configFile(fileId: 'setting-maven-file', variable: 'MAVEN_SETTINGS')]) {
+            script {
+              try {
+                sh 'echo package'
+                sh 'mvn  -s $MAVEN_SETTINGS  --batch-mode package -P package-jar -Dmaven.test.skip=true'
+              } catch (err) {
+                throw err
+              }
+            }
+      }
+   }
+  }
+
+  stage('Docker Build & Push') {
+   steps {
+    script {
+     try {
+      sh 'echo "Docker Build & Push"'
+      /**/
+      // Build and push image with Jenkins' docker-plugin
+      withDockerRegistry([credentialsId: "$REGISTRY_CREDENTIALS_ID", url: "$REGISTRY_URI"]) {
+        def image = docker.build("$DOCKER_IMAGE_URI_VERSION", "-f $DOCKER_FILE_PATH $DOCKER_BUILD_PATH")
+        if ("$USE_DOCKER_IMAGE_TAG_SHA256" == "yes") {
+        // Get sha256 URI
+        env.PUSHED_IMAGE_SHA256 = sh(returnStdout: true, script: '''docker push $DOCKER_IMAGE_URI_VERSION|grep sha256|awk {'print $3'}''').trim()
+        env.DOCKER_IMAGE_NAME_TAG_SH256 = "${DOCKER_IMAGE_NAME}@${PUSHED_IMAGE_SHA256}"
+        env.DOCKER_IMAGE_URI_SH256 = "${REGISTRY_ADDRESS}/${DOCKER_IMAGE_NAME_TAG_SH256}"
+        env.DOCKER_IMAGE_URI = "${DOCKER_IMAGE_URI_SH256}"
+        } else {
+        // Push if no sha256 wanted 
+        image.push()
+        env.DOCKER_IMAGE_URI = "${DOCKER_IMAGE_URI_VERSION}"
+        }
+
+        // Push latest image tag
+        sh returnStdout: true, script: '''docker tag $DOCKER_IMAGE_URI_VERSION $DOCKER_IMAGE_URI_LATEST'''
+        sh returnStdout: true, script: '''docker push $DOCKER_IMAGE_URI_LATEST'''
+
+        // Clean build images
+        if (env.DOCKER_IMAGE_NAME) {
+        sh '''
+        docker images | grep "<none>" | awk {'print "docker rmi "$3'} | bash
+        docker images | grep "$DOCKER_IMAGE_NAME" | grep "$DOCKER_IMAGE_TAG_VERSION" | awk {'print "docker rmi "$1":"$2'} | bash
+        docker images | grep "$DOCKER_IMAGE_NAME" | grep latest | awk {'print "docker rmi "$1":"$2'} | bash
+        '''
+        }
+      }/**/
+    } catch (err) {
+        throw err
+    }
+   }
+   }
+  }
+
+  stage('Deploy to K8S: Integration Environement') {
+   steps {
+    sh 'echo Deploy to K8S: Integration Environement'
+    withKubeConfig([credentialsId: "$K8S_TOKEN_ID",
+     serverUrl: "$K8S_URI",
+     contextName: "$K8S_CONTEXT_NAME",
+     clusterName: "$K8S_CLUSTER_NAME",
+     namespace: "$K8S_NAMESPACE"
+    ]) {
+     script {
+      try {
+       //sh 'kubectl get serviceaccount'
+       sh 'kubectl create secret docker-registry $K8S_DOCKER_IMAGE_SECRET_NAME --docker-server=$REGISTRY_ADDRESS --docker-username=$REGISTRY_CREDENTIALS_USR --docker-password=$REGISTRY_CREDENTIALS_PSW||true 2>/dev/null'
+
+       // Make sure Database Exist
+       sh 'kubectl exec deployment.apps/$PUSH_PAYMENT_MYSQL_HOST -- mysql --user $PUSH_PAYMENT_MYSQL_USER --password=$PUSH_PAYMENT_MYSQL_PASSWORD -se "CREATE DATABASE IF NOT EXISTS $PUSH_PAYMENT_MYSQL_DB;"'
+
+       // K8S manifests creation update
+       if ("$USE_DOCKER_IMAGE_TAG_SHA256" == "yes") {
+        sh 'echo true: $DOCKER_IMAGE_URI'
+        // The below command can be executed when using sha256
+        sh 'envsubst < $K8S_MANIFESTS_PATH/deployment.yaml|kubectl apply -f -'
+       } else {
+        sh 'echo false: $DOCKER_IMAGE_URI'
+        
+        
+        // The below command can be executed when not using sha256, this require imagePullPolicy: Always
+        //env.IS_DEPLOYMENT_CHANGED = sh(returnStdout: true, script: '''envsubst < $K8S_MANIFESTS_PATH/deployment.yaml|kubectl apply -f -|awk {'print $2 '}''').trim()
+        env.IS_DEPLOYMENT_CHANGED = 'test'
+        sh'envsubst < $K8S_MANIFESTS_PATH/deployment.yaml|kubectl apply -f -'
+        sh 'kubectl rollout restart deployment $K8S_DEPLOYMENT_NAME'
+
+        env.CURRENT_IMAGE_IN_K8S = sh(returnStdout: true, script: '''kubectl get deploy/$K8S_DEPLOYMENT_NAME -o jsonpath="{..image}"|head -n 1''').trim()
+        // Force POD redeployment if not yet redeployed
+        if ("$IS_DEPLOYMENT_CHANGED" == "unchanged" && "$CURRENT_IMAGE_IN_K8S" == "$DOCKER_IMAGE_URI_VERSION") {
+         sh 'echo Restart $K8S_DEPLOYMENT_NAME'
+         sh 'kubectl rollout restart deployment $K8S_DEPLOYMENT_NAME'
+        } /**/
+       }
+
+       sh 'envsubst < $K8S_MANIFESTS_PATH/service.yaml|kubectl apply -f -'
+       sh 'envsubst < $K8S_MANIFESTS_PATH/ingress.yaml|kubectl apply -f -'
+      } catch (err) {
+        throw err
+      }
+     }
+    } /**/
+   }
+  }
+
+  stage('Smoke Tests: Integration Environement') {
+   steps {
+    script {
+     try {
+      sh 'echo Smoke Tests: Integration Environement'
+      sh 'echo Rollback if issue'
+     } catch (err) {
+        throw err
+     }
+    }
+   }
+  }
+  
+  /* the end of stages */
+ }
+}

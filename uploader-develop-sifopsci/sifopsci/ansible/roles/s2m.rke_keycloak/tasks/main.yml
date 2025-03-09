@@ -1,0 +1,8 @@
+---
+
+- name: Rendering the keycloak  Manifests
+  local_action:
+    module: template
+    src: keycloak-values.yml.j2
+    dest: /app/ansible/keycloak-values.yml
+    unsafe_writes: yes

@@ -1,0 +1,56 @@
+---
+# tasks file for omnishorerke.common
+- name: Check if rancher package exist on remote host
+  stat:
+    path: /home/{{ ansible_user }}/{{ rancher_package }}
+  register: rancher_package
+
+- name: Copy Rancher Scripts To Harbor Machine
+  template:
+    src: "{{ item }}"
+    dest: "/home/{{ ansible_user }}/{{ item }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0777
+  with_items:
+    - rancher-load-images.sh
+    - {{ platform_directory }}/rancher-images.txt
+  when: not rancher_package.stat.exists
+
+- name: Copy the rancher tarball to harbor
+  copy:
+    src: {{ platform_directory }}/{{ rancher_package }}
+    dest: /home/{{ ansible_user }}/{{ rancher_package }}
+    mode: 0700
+  when: not rancher_package.stat.exists
+
+- name: Docker Login
+  command:
+    cmd: "docker login  {{ harbor_endpoint }} -u admin -p {{ harbor_password }}"
+    chdir: "/home/{{ ansible_user }}"
+
+- name: Start Loading images
+  command:
+    cmd: "sh rancher-load-images.sh -i {{ platform_directory }}/{{ rancher_package }} -l {{ platform_directory }}/rancher-images.txt --registry {{ harbor_endpoint }}"
+    chdir: "/home/{{ ansible_user }}"
+  register: loaded_images
+
+- name: Print the loaded image names
+  debug:
+    msg: "{{ loaded_images }}"
+
+#- name: add harbor ep to hosts
+#  local_action:
+#    module: lineinfile
+#    dest: "/etc/hosts"
+#    line: "{{ harbor_ip }} {{ harbor_endpoint }}"
+#  when: offline
+
+#- name: Upload Docker Images
+#  local_action: shell /app/ansible/load-tag-push.sh artifacts/rancher.tar.gz ansible/rancher-images.txt {{ harbor_endpoint }} admin {{ harbor_password }} chdir=/app
+#  register: loaded
+#  when: offline
+
+#- name: Print the loaded image names
+#  debug:
+#    msg: "{{ loaded }}"
