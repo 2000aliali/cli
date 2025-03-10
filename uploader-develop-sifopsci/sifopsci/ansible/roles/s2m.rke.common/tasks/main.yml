@@ -45,32 +45,64 @@
   dnf:
     name: podman
     state: absent
+  when: ansible_os_family == "RedHat"
 
 - name: Install required NFS dependencies
   dnf:
     name: nfs-utils
     state: present
+  when: ansible_os_family == "RedHat"
 
 - name: Install iptables services
   dnf:
     name: iptables-services
     state: present
+  when: ansible_os_family == "RedHat"
 
 - name: Install tar
   dnf:
     name: tar
     state: present
+  when: ansible_os_family == "RedHat"
 
-- name: Enable and start iptables
+- name: Ensure iptables package is installed
+  dnf:
+    name: iptables-services
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Check if iptables service exists
+  command: systemctl list-units --type=service --all | grep iptables
+  register: iptables_service
+  changed_when: false
+  ignore_errors: yes
+
+- name: Enable and start iptables if available
   systemd:
     name: iptables
     enabled: yes
     state: started
+  when: iptables_service.rc == 0
+
+- name: Check if nftables is being used instead of iptables
+  command: nft --version
+  register: nft_check
+  changed_when: false
+  ignore_errors: yes
+
+- name: Enable and start nftables if iptables is not available
+  systemd:
+    name: nftables
+    enabled: yes
+    state: started
+  when: iptables_service.rc != 0 and nft_check.rc == 0
+
 
 - name: Install open-iscsi package
   dnf:
     name: iscsi-initiator-utils
     state: present
+  when: ansible_os_family == "RedHat"
 
 - name: Enable and start open-iscsi service
   systemd:
@@ -82,6 +114,7 @@
   modprobe:
     name: ip_tables
     state: absent
+  ignore_errors: yes
 
 - name: Adding Harbor to /etc/hosts
   lineinfile:
@@ -136,7 +169,7 @@
         src: /tmp/docker/
         dest: /usr/bin/
         remote_src: yes
-  when: docker_check.stderr.find('service could not be found') != -1
+  when: docker_check.stderr is defined and 'service could not be found' in docker_check.stderr
 
 - name: Copy Docker systemd service files
   template:
@@ -169,7 +202,7 @@
   file:
     path: /tmp/docker-20.10.10.tar
     state: absent
-  when: docker_check.stderr.find('service could not be found') != -1
+  when: docker_check.stderr is defined and 'service could not be found' in docker_check.stderr
 
 - name: Add RKE admin user to Docker group
   user:
