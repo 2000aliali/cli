@@ -1,123 +1,144 @@
 ---
 # tasks file for omnishorerke.common
 
-- name: Update Policies
-  shell: update-crypto-policies --set LEGACY
-  ignore_errors: yes 
+- name: Ensure crypto-policies is installed (required for update-crypto-policies)
+  dnf:
+    name: crypto-policies
+    state: present
+  when: ansible_distribution == "RedHat" or ansible_distribution == "CentOS"
 
-- name: runc
+- name: Update Policies
+  command: update-crypto-policies --set LEGACY
+  ignore_errors: yes
+  when: ansible_distribution == "RedHat" or ansible_distribution == "CentOS"
+
+# Ensure the correct Python interpreter is used
+- name: Set Python interpreter to platform-python (for RHEL-based systems)
+  set_fact:
+    ansible_python_interpreter: /usr/libexec/platform-python
+  when: ansible_os_family == "RedHat"
+
+# Ensure python3-dnf is installed using raw module (it runs commands even if Python is not fully set up)
+- name: Install python3-dnf if missing
+  raw: yum install -y python3-dnf || dnf install -y python3-dnf
+  changed_when: false
+  when: ansible_os_family == "RedHat"
+
+# Refresh facts after installing python3-dnf to ensure dnf module can be used
+- name: Gather facts again
+  setup:
+
+- name: Remove runc
   dnf:
     name: runc
     state: absent
+  when: ansible_os_family == "RedHat"
 
-- name: buildah
+- name: Remove buildah
   dnf:
     name: buildah
     state: absent
+  when: ansible_os_family == "RedHat"
 
-- name: podman
+
+- name: Remove podman
   dnf:
     name: podman
     state: absent
 
-- name: nfs dependencies
+- name: Install required NFS dependencies
   dnf:
-    name: ['nfs-utils']
+    name: nfs-utils
     state: present
 
-- name: iptables services
+- name: Install iptables services
   dnf:
-    name: ['iptables-services']
+    name: iptables-services
     state: present
 
-- name: tar service
+- name: Install tar
   dnf:
-    name: ['tar']
+    name: tar
     state: present
 
-- name: enable iptables
+- name: Enable and start iptables
   systemd:
     name: iptables
     enabled: yes
-   
-- name: start iptables
-  systemd:
-    name: iptables
     state: started
 
-- name: open-iscsi
+- name: Install open-iscsi package
   dnf:
     name: iscsi-initiator-utils
     state: present
 
-- name: open-iscsi
+- name: Enable and start open-iscsi service
   systemd:
     name: iscsi
     enabled: yes
-    
-- name: open-iscsi
-  systemd:
-    name: iscsi
     state: started
 
-- name: Blacklist ip tables legacy
-  kernel_blacklist:
+- name: Blacklist ip_tables module
+  modprobe:
     name: ip_tables
-    state: present
+    state: absent
 
-- name: Adding harbor to /etc/hosts
+- name: Adding Harbor to /etc/hosts
   lineinfile:
-    dest: "/etc/hosts"
-    line: "{{ item.line }}"
+    path: "/etc/hosts"
+    line: "{{ harbor_ip }} {{ harbor_endpoint }}"
     state: present
-  with_items:
-     - line: "{{ harbor_ip }} {{ harbor_endpoint }}"
 
-- name: copy Harbor CA
+- name: Copy Harbor CA certificate
   copy:
     src: "{{ platform_files_directory }}/ca-harbor.crt"
     dest: /etc/pki/ca-trust/source/anchors/mycrt.pem
     mode: 0600
   when: harbor_ssl
 
-- name: update ca trust
-  shell: "update-ca-trust"
+- name: Update CA trust
+  command: update-ca-trust
   when: harbor_ssl
 
-- name: elasticsearch prerequisite
-  command: sysctl -w vm.max_map_count=262144
+- name: Elasticsearch prerequisites
+  sysctl:
+    name: vm.max_map_count
+    value: '262144'
+    state: present
 
-- name: elasticsearch prerequisite
-  command: sysctl -w fs.file-max=65536
+- name: Elasticsearch file limit
+  sysctl:
+    name: fs.file-max
+    value: '65536'
+    state: present
 
 - name: Check if Docker is installed
   command: systemctl status docker
   register: docker_check
   ignore_errors: yes
 
-- name: Copy the Docker package
-  copy:
-    src: docker-20.10.10.tar
-    dest: /tmp/docker-20.10.10.tar
-    mode: 0700
+- name: Copy and extract Docker package if missing
+  block:
+    - name: Copy the Docker package
+      copy:
+        src: docker-20.10.10.tar
+        dest: /tmp/docker-20.10.10.tar
+        mode: 0700
+
+    - name: Extract Docker archive
+      unarchive:
+        src: /tmp/docker-20.10.10.tar
+        dest: /tmp/
+        remote_src: yes
+
+    - name: Install Docker
+      copy:
+        src: /tmp/docker/
+        dest: /usr/bin/
+        remote_src: yes
   when: docker_check.stderr.find('service could not be found') != -1
 
-- name: Extract the docker archive into remote hosts
-  unarchive:
-    src: /tmp/docker-20.10.10.tar
-    dest: /tmp/
-    remote_src: yes
-  when: docker_check.stderr.find('service could not be found') != -1
-
-- name: Install Docker
-  copy:
-    src: /tmp/docker/
-    dest: /usr/bin/
-    remote_src: yes
-  when: docker_check.stderr.find('service could not be found') != -1
-
-
-- name: Copy Docker Units files to /etc/systemd/system
+- name: Copy Docker systemd service files
   template:
     src: "{{ item }}"
     dest: "/etc/systemd/system/{{ item }}"
@@ -129,68 +150,46 @@
     - docker.socket
     - containerd.service
 
-- name: Changing the permissions
-  file:
-     path: "{{ item }}"
-     owner: "{{ ansible_user }}"
-     mode: 0777
-  with_items:
-    - /usr/bin/dockerd
-    - /usr/bin/docker-init
-    - /usr/bin/runc
-    - /usr/bin/ctr
-    - /usr/bin/containerd-shim-runc-v2
-    - /usr/bin/containerd-shim
-    - /usr/bin/docker
-    - /usr/bin/containerd
-    - /usr/bin/docker-proxy
-
-
-- name: Reload the service files
+- name: Reload systemd
   command: systemctl daemon-reload
 
-- name: Create docker group
+- name: Create Docker group
   group:
     name: docker
     state: present
-  
-- name: Enable the Docker daemon in systemd
+
+- name: Enable and start Docker service
   systemd:
     name: docker
     enabled: yes
-    masked: no
-
-- name: Start the Docker daemon
-  systemd:
-    name: docker
     state: started
     masked: no
 
-- name: Remove the Docker installer file.
+- name: Remove Docker installer file
   file:
-    state: absent
     path: /tmp/docker-20.10.10.tar
+    state: absent
   when: docker_check.stderr.find('service could not be found') != -1
 
-- name: Add RKE admin user
+- name: Add RKE admin user to Docker group
   user:
     name: "{{ ansible_user }}"
     shell: /bin/bash
     groups: docker
-    append: 'yes'
-     
-- name: Create sudo file
+    append: yes
+
+- name: Create sudo file for the user
   file:
     path: /etc/sudoers.d/{{ ansible_user }}
     state: touch
-    
-- name: Give devops user passwordless sudo
+
+- name: Grant passwordless sudo to the user
   lineinfile:
     path: /etc/sudoers.d/{{ ansible_user }}
-    state: present
     line: '{{ ansible_user }} ALL=(ALL:ALL) NOPASSWD: ALL'
-     
-- name: Set authorized key taken from file
+    state: present
+
+- name: Set authorized SSH key
   authorized_key:
     user: "{{ ansible_user }}"
     state: present
@@ -203,43 +202,37 @@
   with_items: "{{ kernel_modules }}"
   ignore_errors: yes
 
-- name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
-  shell: |
-    swapoff -a
+- name: Disable SWAP temporarily
+  command: swapoff -a
 
-- name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
+- name: Disable SWAP in fstab
   replace:
     path: /etc/fstab
     regexp: '^([^#].*?\sswap\s+.*)$'
     replace: '# \1'
 
-- name: Modify sysctl entries
+- name: Configure sysctl settings
   sysctl:
     name: '{{ item.key }}'
     value: '{{ item.value }}'
     sysctl_set: yes
-    ignoreerrors: yes
     state: present
     reload: yes
   with_items:
     - {key: net.bridge.bridge-nf-call-ip6tables, value: 1}
-    - {key: net.bridge.bridge-nf-call-iptables,  value: 1}
-    - {key: net.bridge.bridge-nf-call-arptables,  value: 1}
-    - {key: net.ipv4.ip_forward,  value: 1}
-  
+    - {key: net.bridge.bridge-nf-call-iptables, value: 1}
+    - {key: net.bridge.bridge-nf-call-arptables, value: 1}
+    - {key: net.ipv4.ip_forward, value: 1}
 
-- name: Hardening sshd
+- name: Harden SSHD configuration
   lineinfile:
-    dest: "/etc/ssh/sshd_config"
-    regexp: "{{ item.regexp | default(omit) }}"
-    line: "{{ item.line }}"
-    state: "{{ item.state | default('present') }}"
+    path: "/etc/ssh/sshd_config"
+    regexp: "^AllowTcpForwarding "
+    line: "AllowTcpForwarding yes"
+    state: present
     validate: "sshd -t -f %s"
-  with_items:
-    - regexp: "^AllowTcpForwarding\ "
-      line: "AllowTcpForwarding yes"
 
-- name: Reload sshd
-  service:
+- name: Restart SSHD service
+  systemd:
     name: sshd
     state: restarted

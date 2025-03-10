@@ -985,7 +985,7 @@ if args.create == "create":
                     logger.error("Minio Playbook failed")
                     sys.exit(1)
                 logging.info("Add Minio Server... ")
-                retcode = subprocess.call("mc alias set myminio https://{}:443 {} {} --insecure".format(platformSpec["minio"]["ip"],platformSpec["minio"]["accessId"],platformSpec["minio"]["accessKey"]),shell=True,stderr=subprocess.STDOUT)
+                retcode = subprocess.call("mc alias set myminio http://{}:443 {} {} --insecure".format(platformSpec["minio"]["ip"],platformSpec["minio"]["accessId"],platformSpec["minio"]["accessKey"]),shell=True,stderr=subprocess.STDOUT)
                 if retcode == 0:
                     logger.info("Minio server  was added successfully")
                 else:
