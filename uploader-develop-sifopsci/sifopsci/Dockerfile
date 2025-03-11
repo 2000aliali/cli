@@ -31,6 +31,7 @@ RUN apk --no-cache add docker
 
 RUN pip3 install pyyaml
 
+
 RUN apk add --no-cache bash
 RUN apk add --no-cache sshpass
 

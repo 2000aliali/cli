@@ -106,11 +106,15 @@
   when: ansible_os_family == "Debian" and nft_check.rc == 0
 
 
-  
+
+
 - name: Install open-iscsi
   apt:
     name: open-iscsi
     state: present
+    update_cache: yes
+
+
 
 - name: Enable open-iscsi service
   systemd:
@@ -211,11 +215,11 @@
     state: started
     masked: no
 
-- name: Remove Docker installer file
-  file:
-    path: /tmp/docker-20.10.10.tar
-    state: absent
-  when: docker_check.stderr is defined and 'service could not be found' in docker_check.stderr
+#- name: Remove Docker installer file
+#  file:
+#    path: /tmp/docker-20.10.10.tar
+#    state: absent
+#  when: docker_check.stderr is defined and 'service could not be found' in docker_check.stderr
 
 - name: Add RKE admin user to Docker group
   user:

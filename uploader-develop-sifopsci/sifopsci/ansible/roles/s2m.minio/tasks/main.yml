@@ -212,11 +212,11 @@
     state: started
     masked: no
 
-- name: Remove the Docker installer file.
-  file:
-    state: absent
-    path: /tmp/docker-20.10.10.tar
-  when: docker_check.stderr.find('service could not be found') != -1
+#- name: Remove the Docker installer file.
+#  file:
+#    state: absent
+#    path: /tmp/docker-20.10.10.tar
+#  when: docker_check.stderr.find('service could not be found') != -1
 
 - name: Install Docker compose
   copy:
@@ -299,5 +299,5 @@
   debug: 
     msg: "{{ compose_ps.stdout }}"
 
-- name: Sleep for 60s
+- name: Sleep for 30s
   shell: sleep 120
