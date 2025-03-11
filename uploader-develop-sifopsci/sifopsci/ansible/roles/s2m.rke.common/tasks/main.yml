@@ -77,38 +77,51 @@
   changed_when: false
   ignore_errors: yes
 
-- name: Enable and start iptables if available
+
+
+- name: Check if iptables is active (Ubuntu)
+  shell: iptables -L
+  register: iptables_status
+  changed_when: false
+  ignore_errors: yes
+
+- name: Enable and start UFW
   systemd:
-    name: iptables
+    name: ufw
     enabled: yes
     state: started
-  when: iptables_service.rc == 0
+  when: ansible_os_family == "Debian"
 
-- name: Check if nftables is being used instead of iptables
+- name: Check if nftables is being used (Ubuntu)
   command: nft --version
   register: nft_check
   changed_when: false
   ignore_errors: yes
 
-- name: Enable and start nftables if iptables is not available
+- name: Enable and start nftables if iptables is not available (Ubuntu)
   systemd:
     name: nftables
     enabled: yes
     state: started
-  when: iptables_service.rc != 0 and nft_check.rc == 0
+  when: ansible_os_family == "Debian" and nft_check.rc == 0
 
 
-- name: Install open-iscsi package
-  dnf:
-    name: iscsi-initiator-utils
+  
+- name: Install open-iscsi
+  apt:
+    name: open-iscsi
     state: present
-  when: ansible_os_family == "RedHat"
 
-- name: Enable and start open-iscsi service
+- name: Enable open-iscsi service
   systemd:
-    name: iscsi
+    name: iscsid
     enabled: yes
+
+- name: Start open-iscsi service
+  systemd:
+    name: iscsid
     state: started
+
 
 - name: Blacklist ip_tables module
   modprobe:
