@@ -5,6 +5,9 @@ docker build -t sifops:v1.1.1 .
 
 /home/s2mtest/Downloads/uploader-develop-sifopsci/sifopsci
 
+docker run --rm -it --network=host --privileged -v /home/s2mtest/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub:ro -v /home/s2mtest/.paasrc/platform/SGABS:/app/opt/platform/SGABS sifops:v1.1.1 create --data /app/opt/platform/SGABS/data.yml
+
+
 
 
 
