@@ -47,7 +47,7 @@
 - import_tasks: disable-other-firewalls.yml
   when: firewall_disable_firewalld or firewall_disable_ufw
 
-- name: Reload docker
-  service:
-    name: docker
-    state: restarted
+#- name: Reload docker
+#  service:
+#    name: docker
+#    state: restarted
